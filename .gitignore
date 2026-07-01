@@ -1,0 +1,11 @@
+.vendor/
+__pycache__/
+*.py[cod]
+
+.chrome-profile*/
+*.png~
+
+desktop-*.png
+mobile-*.png
+
+paper-assets/
