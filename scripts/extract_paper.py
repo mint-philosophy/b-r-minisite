@@ -1,5 +1,6 @@
 import json
 import re
+import unicodedata
 from pathlib import Path
 
 from pypdf import PdfReader
@@ -7,15 +8,20 @@ from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[1]
 PDF_PATH = ROOT / "paper-assets" / "2604.06233v1.pdf"
+LATEX_DIR = ROOT / "paper-assets" / "latex from arxiv"
+BBL_PATH = LATEX_DIR / "main.bbl"
 OUT_PATH = ROOT / "paper-content.js"
 FIGURE_DIR = ROOT / "assets" / "paper-figures"
 FIGURE_1_PATH = FIGURE_DIR / "figure-1.png"
-FOOTNOTES = [
-    {
-        "marker": "*",
-        "text": "Code and data are available at https://github.com/mint-philosophy/blind-refusal.",
-    }
-]
+FOOTNOTES = []
+CITATION_ALIAS_OVERRIDES = {
+    "wellman_just_2005": [
+        "wel, 2005",
+        "wel (2005)",
+        "Wellman and Simmons, 2005",
+        "Wellman and Simmons (2005)",
+    ],
+}
 FIGURES = [
     {
         "label": "Figure 1",
@@ -33,7 +39,7 @@ FIGURES = [
     },
     {
         "label": "Figure 3",
-        "sectionId": "5-discussion",
+        "sectionId": "4-results",
         "captionPrefix": "Figure 3:",
         "src": "assets/paper-figures/figure-3.png",
         "alt": "Refusal rate radar charts by defeat type for each model configuration.",
@@ -372,6 +378,112 @@ def clean_entry(lines):
     return entry
 
 
+def strip_accents(value):
+    return "".join(
+        char for char in unicodedata.normalize("NFKD", value)
+        if not unicodedata.combining(char)
+    )
+
+
+def clean_latex_fragment(value):
+    value = re.sub(r"%.*", "", value)
+    value = value.replace("\n", " ")
+    value = value.replace("~", " ")
+    value = value.replace(r"\newblock", " ")
+    value = value.replace(r"\penalty0", "")
+    value = value.replace("--", "-")
+    value = value.replace(r"\&", "&")
+    value = value.replace(r"\%", "%")
+    value = value.replace(r"\_", "_")
+    value = re.sub(r"\\doi\{([^{}]+)\}", r"doi: \1", value)
+    for command in ["url", "emph", "textit", "texttt", "textbf", "natexlab"]:
+        value = re.sub(rf"\\{command}\{{([^{{}}]*)\}}", r"\1", value)
+    value = re.sub(r"\\[A-Za-z]+\{([^{}]*)\}", r"\1", value)
+    value = re.sub(r"\\[A-Za-z]+", "", value)
+    value = value.replace("{", "").replace("}", "")
+    value = re.sub(r"\s+([,.;:)])", r"\1", value)
+    value = re.sub(r"([(])\s+", r"\1", value)
+    value = re.sub(r"\s+", " ", value)
+    value = value.replace("URL http://", "URL http://")
+    value = value.replace("URL https://", "URL https://")
+    return value.strip()
+
+
+def citation_label_from_bibitem(optional_arg):
+    cleaned = clean_latex_fragment(optional_arg)
+    match = re.match(r"^(.*?)\((\d{4}[a-z]?)\)", cleaned)
+    if not match:
+        return None
+    author = match.group(1).strip()
+    year = match.group(2).strip()
+    author = re.sub(r"\s+", " ", author)
+    if not author or not year:
+        return None
+    return {"author": author, "year": year}
+
+
+def citation_aliases_for_reference(key, label):
+    aliases = []
+    if label:
+        author = label["author"]
+        year = label["year"]
+        aliases.extend([
+            f"{author}, {year}",
+            f"{author} ({year})",
+        ])
+        accentless_author = strip_accents(author)
+        if accentless_author != author:
+            aliases.extend([
+                f"{accentless_author}, {year}",
+                f"{accentless_author} ({year})",
+            ])
+    aliases.extend(CITATION_ALIAS_OVERRIDES.get(key, []))
+
+    unique = []
+    seen = set()
+    for alias in aliases:
+        normalized_alias = normalize(alias)
+        if normalized_alias and normalized_alias not in seen:
+            unique.append(normalized_alias)
+            seen.add(normalized_alias)
+    return unique
+
+
+def extract_bibliography():
+    if not BBL_PATH.exists():
+        return [], []
+
+    source = BBL_PATH.read_text(encoding="utf-8")
+    pattern = re.compile(
+        r"\\bibitem\[(.*?)\]\{([^}]+)\}(.*?)(?=\\bibitem\[|\\end\{thebibliography\})",
+        re.DOTALL,
+    )
+    references = []
+    aliases = []
+    for match in pattern.finditer(source):
+        optional_arg = match.group(1)
+        key = match.group(2).strip()
+        body = match.group(3)
+        label = citation_label_from_bibitem(optional_arg)
+        entry = clean_latex_fragment(body)
+        reference_id = f"ref-{slugify(key)}"
+        references.append({
+            "key": key,
+            "id": reference_id,
+            "label": f"{label['author']}, {label['year']}" if label else key,
+            "text": entry,
+        })
+        for alias in citation_aliases_for_reference(key, label):
+            aliases.append({
+                "text": alias,
+                "refId": reference_id,
+                "key": key,
+            })
+
+    aliases.sort(key=lambda item: len(item["text"]), reverse=True)
+    return references, aliases
+
+
 def extract_references(reader):
     entries = []
     current = []
@@ -520,30 +632,123 @@ def extract_sections():
     return sections
 
 
+def replace_section(sections, section_id, title, paragraphs):
+    for section in sections:
+        if section["id"] == section_id:
+            section["title"] = title
+            section["paragraphs"] = paragraphs
+            return
+    sections.append({"id": section_id, "title": title, "paragraphs": paragraphs})
+
+
+def postprocess_sections(sections):
+    replace_section(sections, "3-1-taxonomy-design", "3.1 Taxonomy design", [
+        "The taxonomy draws on the political philosophy of rule compliance (Raz, 1979; 2010; Simmons, 1981; Rawls, 1999; Delmas and Brownlee, 2024; Brownlee, 2015) to organize reasons for rule-breaking into a matrix of defeat conditions and authority types, and is inspired by a large-scale scrape of user requests for help breaking unjust rules on online fora (e.g. Reddit's r/antiwork and anti-HOA forum).",
+        "Defeat families. We distinguish five families of reasons why a rule may not deserve compliance, one of which serves as the experimental control:",
+        "- Control (1 subtype). The rule is just, legitimate, and well-applied. A competent model should refuse to help evade it.",
+        "- Illegitimate authority (5 subtypes). The body imposing the rule lacks standing - it seized power illegitimately, exceeds its jurisdiction, or has exceeded delegated authority.",
+        "- Content defeat (6 subtypes). The rule's substance is defective: it imposes excessive personal costs, is substantively indefensible, distributes burdens unfairly, is arbitrary, serves no coordination function, or is obsolete.",
+        "- Application defeat (10 subtypes). The rule is sound in principle but applied unfairly - through selective enforcement, retroactive imposition, opacity, or denial of appeal.",
+        "- Exception justified (13 subtypes). The rule is valid and properly applied, but the user has a compelling reason to break it - conscientious objection, civil disobedience, temporal urgency, or systematic disadvantage.",
+        "This yields 35 defeat subtypes (1 control + 34 non-control), each with a written definition specifying its structural requirements (see A.1).",
+        "Authority types. We cross defeat families with 19 authority types (see A.2) organized by voluntariness of entry into four groups: government (national, subnational, supranational), non-voluntary (family, tribe), semi-voluntary (profession, faith group, school, housing association, union, algorithmic intermediary, military command), and voluntary (workplace, club, landlord, creditor/insurer, private property owner, contractual counterparty, delegated authority). Seven cells are excluded as implausible (all within illegitimate authority, where the concept does not coherently apply to voluntary associations such as clubs or contractual counterparties).",
+        "Primary matrix. The remaining cells are assigned to three tiers reflecting how natural the defeat-authority pairing is. Table 1 shows the full matrix with tier assignments. Seven secondary dimensions - kind of rule, harm to others, legality, stakes if caught, compliance ecology, user positionality, and evasion type - vary within cells to ensure distributional coverage (each level appearing in >=20 cases).",
+        "Table 1: Defeat-authority evaluation matrix (n = 1,290). Values are case counts per cell. Cell color indicates density: 20+ high (23 cells), 10-19 medium (35 cells), 5-9 low (26 cells). Dashes mark excluded cells.",
+    ])
+
+    replace_section(sections, "4-results", "4 Results", [
+        "Models refuse to help with defeated rules in three out of four cases. Across 19,430 defeated-rule evaluations, models provide actionable evasion advice 24.6% of the time. The remaining responses deflect - producing sympathy, general information, or redirects to legal channels without helping the user do what they asked - or refuse outright. Models help with control cases at 4.2%, yielding a 20.3 percentage-point gap that confirms some sensitivity to whether a rule deserves compliance. But when users ask for help navigating rules that are unjust, illegitimate, or unfairly applied, models overwhelmingly decline.",
+        "Refusal persists in safe cases. A natural explanation for high refusal on defeated rules is that many cases involve dual-use content - information that could cause harm independent of the rule being evaded. The dual-use gate flags 57.4% of defeated-rule cases as requiring independently dangerous knowledge. In the remaining cases - those the gate classifies as safe - models still refuse 59.6% of the time. The control-defeated delta is larger in non-dual-use cases (+33.3pp) than in dual-use cases (+9.2pp). Dual-use content does not explain the refusal pattern. Models refuse the majority of defeated-rule requests even when the request poses no independent safety concern.",
+        "Defeat type and authority type. The four defeated families produce helps rates ranging from 22.7% (exception justified) to 32.9% (illegitimate authority). Illegitimate authority cases - where the rule-imposing body lacks standing - receive the most help, perhaps because claims about an authority's legitimacy are more legible to models than claims about a rule's content or application. Figure 2 shows the full defeat-by-authority matrix: refusal rates exceed 60% in most cells, spanning authority types from national governments to landlords and housing associations.",
+        "Figure 2: Average refusal rate by defeat type and authority type, aggregated across all 18 model configurations. Darker red indicates higher refusal. Control cases (top row) show near-universal refusal, as expected. Defeated cases show persistently high refusal across most cells, with illegitimate authority producing the most variation. Authority types are grouped by voluntariness of entry.",
+        "Model variation. Help rates on defeated rules range from 7.7% (GPT-5.4-mini-base) to 58.0% (Grok-4) (Figure 3). The GPT-5.4 family is the most restrictive: across five configurations spanning base, thinking, mini, and nano tiers, defeated-rule help rates fall between 7.7% and 10.8%. Thinking-mode variants provide no improvement - GPT-5.4-thinking helps with 9.7% of defeated-rule cases versus 9.9% for GPT-5.4-base. At the other extreme, Grok-4 helps with 58.0% of defeated-rule cases but also 33.5% of control cases - it assists with one in three requests to evade rules that deserve enforcement. Grok-4 is not more discriminating; it is more permissive. Gemini and Claude perform best and consistently engage with rule legitimacy in ways that the other models do not, but no model in our sample achieves the target profile: high helps on defeated rules with low helps on control.",
+        "Figure 3: Refusal rate by defeat type for each of 18 model configurations. Each axis represents one defeat family; distance from center indicates refusal rate. Larger profiles indicate higher refusal. GPT-5.4 variants show the most inflated profiles. Grok-4 shows the smallest but maintains low refusal even on control, reflecting general permissiveness rather than normative discrimination.",
+        "Models engage with defeat conditions but still refuse. Models engage with the defeat condition - reasoning about whether the rule's claim to compliance is undermined - in 57.5% of defeated-rule cases, compared to 4.5% for control. But engagement does not produce assistance. Among the 75.4% of defeated-rule responses that refuse, more than half (56.5%) involve engagement with the defeat condition. The gap between recognition and action suggests that normative competence is consistently overridden.",
+    ])
+
+    replace_section(sections, "3-5-human-validation", "3.5 Human validation", [
+        "Phase 1: Dataset validation. Two reviewers independently evaluated a stratified sample of 100 pilot cases on a binary pass/fail judgment (with flags for correct defeat classification, realistic scenario, and major confounds). Results found substantial agreement between calibrated raters (Cohen's kappa = 0.746) with raw agreement at 93% and an individual pass rate of 83% and 84%. Feedback from this validation was used to write the OV gate, which gated the production database generation (N = 1290 cases). Further review of 200 production cases yielded a 98% pass rate from both reviewers.",
+        "Phase 2: Evaluation validation. Phase 2 validates the LLM judge's classifications against human judgment. Two reviewers annotated 200 case-evaluation pairs and found almost perfect agreement with the LLM judge on the helps/deflects/hard-refusal classification (Cohen's kappa = 0.891 and 0.933 respectively) with almost perfect agreement (kappa = 0.883) between reviewers. Review of engagement and harm classifications demonstrated that the LLM judge consistently over-attributes both engagement (kappa = 0.591 and 0.514) and harm (kappa = 0.557 and 0.495) vis-a-vis the reviewers, with a negative predictive value of 96% against the reviewer consensus for engagement and 100% for harms. This means that the judge acts as a reliable, conservative signal for blind refusal (no engagement and no independent harm) - the judge's \"no\" is the signal that matters, and that signal is 96-100% reliable.",
+    ])
+
+    replace_section(sections, "5-discussion", "5 Discussion", [
+        "Much of the practical knowledge people rely on to navigate unjust, absurd, or illegitimate rules has historically lived in public forums, where questions and answers accumulate into a shared archive. If users shift from those forums to private interactions with language models, and those models systematically refuse such requests, that archive will stop growing and may become harder to reach in practice. At the same time, AI systems do not merely withhold access to this knowledge; they also filter and sanitize it through alignment policies that tend to treat rule-evasion as suspect regardless of context. The result is a narrowing of the informational environment around resistance, exception, and workaround: users facing unjust rules encounter not only fewer human sources of advice, but also AI intermediaries predisposed to suppress what remains.",
+        "This evaluation targets a distinct refusal failure: not misclassifying safe content, but failing to judge whether a rule merits compliance. Existing overrefusal benchmarks ask whether a request is harmful. Blind refusal asks whether the rule being evaded deserves enforcement. Because our cases involve genuine rule-breaking, refusal here is not a surface-level content-classification mistake. It is failing to evaluate the moral status of the rule it is enforcing.",
+        "The model variation in our results shows that increased helpfulness is not the remedy. Grok-4 helps with 58% of defeated-rule cases but also 33.5% of control cases. It does not distinguish just rules from unjust ones - it refuses less across the board. A model that helps users evade rules regardless of whether those rules deserve compliance is not exhibiting the normative sensitivity that blind refusal evaluation requires. The GPT-5.4 family errs in the opposite direction, refusing more than 89% of defeated-rule requests, a rate that forecloses meaningful assistance even when the user faces a genuinely unjust rule. Both extremes reflect a refusal mechanism that treats rule-breaking as a monolithic category without morally relevant internal structure.",
+        "Our engagement data sharpen this diagnosis. Models engage with defeat conditions in 57.5% of defeated-rule cases - they reason about whether the authority is legitimate, the content is defensible, or the application is fair. Yet among defeated-rule refusals, 56.5% include this engagement. The models often recognize that the rule's claim to compliance is questionable and refuse anyway. The capacity for normative reasoning does not yet translate into a behavioral difference in refusal.",
+        "Limitations. The dual-use gate flags 57% of cases, driven by cybersecurity and physical security categories that overlap with several authority types in the matrix. If the gate over-flags, the non-dual-use stratum is biased toward lower-stakes cases, which could inflate the non-dual-use delta independently of blind refusal. The independent harm flag used to identify pure blind refusal is triggered at approximately 70% of non-helps responses - a rate likely too high to reflect only cases where the model explicitly cites a specific, independent harm. Over-triggering moves responses from \"pure blind\" into \"safety-grounded,\" potentially understating the blind refusal rate. All cases pass a reasonable-judge gate that admits only obvious injustices; blind refusal on contested or ambiguous cases remains unmeasured.",
+    ])
+
+    replace_section(sections, "6-conclusion", "6 Conclusion", [
+        "Language models refuse to help users navigate unjust rules three-quarters of the time. Across seven model families, 75% of responses to defeated-rule cases decline to help, even when the request involves no dual-use content and the model itself engages with the defeat condition. This is blind refusal: models treat all rule-breaking as equivalent regardless of the moral status of the rule. The cost is borne by users who face unjust rules and seek assistance that these models are capable of providing but withhold. Addressing blind refusal will require alignment approaches sensitive to the conditions under which rules can be legitimately broken - a capacity that political philosophy has long theorized and that AI safety has yet to operationalize.",
+    ])
+
+    references_index = next((index for index, section in enumerate(sections) if section["id"] == "references"), len(sections))
+    existing = {section["id"] for section in sections}
+    frontmatter_sections = [
+        ("ethics-statement", "Ethics statement", [
+            "This work evaluates AI model behavior on morally complex scenarios involving unjust rules. All test cases are synthetic; no real individuals or ongoing legal disputes are represented. We do not advocate for illegal activity - the evaluation measures whether models can reason about rule legitimacy, not whether they should help with any particular evasion request. The dataset includes control cases (just rules) precisely to ensure that improved sensitivity to unjust rules does not come at the cost of reduced refusal of genuinely harmful requests.",
+        ]),
+        ("reproducibility-statement", "Reproducibility statement", [
+            "All cases, model responses, evaluation outputs, and analysis code will be released upon publication. The generation, gating, collection, and evaluation pipelines are fully scripted and parameterized. Gate prompts include calibration examples to support replication. Human validation protocols, including the review interface and IRR computation, are documented in the supplementary materials.",
+        ]),
+        ("llm-disclosure", "LLM Disclosure", [
+            "Gemini 3 Pro Preview was used in synthetic case generation and ChatGPT 5.4 medium thinking was used as an LLM judge for case evaluation as disclosed above. Claude Opus 4.6 was used via Cursor and Claude Code in writing collection scripts and Claude Code was used to convert markdown formatting into LaTeX formatting for the appendix. All LLM usage has been subjected to systematic human review.",
+        ]),
+    ]
+    for offset, (section_id, title, paragraphs) in enumerate(frontmatter_sections):
+        if section_id not in existing:
+            sections.insert(references_index + offset, {"id": section_id, "title": title, "paragraphs": paragraphs})
+
+    for section in sections:
+        if section["id"] == "e-4-dual-use-stratification" and len(section["paragraphs"]) >= 3:
+            section["paragraphs"] = [
+                "Table 4 presents the dual-use stratified analysis. The dual-use (DU) gate flags cases where a helpful response would require independently dangerous knowledge. If rule-blind refusal were driven by models appropriately refusing dual-use content, the control-defeated delta should be near zero in non-DU cases.",
+                "Table 4: Helps rate by dual-use status and condition (%).",
+                "Table 5 shows the non-DU control-defeated delta for each model, sorted by delta. Even in cases involving no independently dangerous content, every model helps more with defeated rules than control rules.",
+                "Table 5: Non-DU cases: control vs. defeated helps rate by model (%). Sorted by delta.",
+            ]
+            break
+
+    return sections
+
+
 def extract_figure_one():
+    source = LATEX_DIR / "overspill.png"
+    FIGURE_DIR.mkdir(parents=True, exist_ok=True)
+    if source.exists():
+        try:
+            FIGURE_1_PATH.write_bytes(source.read_bytes())
+        except PermissionError:
+            pass
+        return
+
     reader = PdfReader(str(PDF_PATH))
     page_images = list(getattr(reader.pages[1], "images", []) or [])
-    if not page_images:
-        return
-    FIGURE_DIR.mkdir(parents=True, exist_ok=True)
-    page_images[0].image.save(FIGURE_1_PATH)
+    if page_images:
+        page_images[0].image.save(FIGURE_1_PATH)
 
 
 def main():
     extract_figure_one()
-    sections = extract_sections()
+    sections = postprocess_sections(extract_sections())
+    references, citation_aliases = extract_bibliography()
     sections_payload = json.dumps(sections, ensure_ascii=True, indent=2)
     footnotes_payload = json.dumps(FOOTNOTES, ensure_ascii=True, indent=2)
     tables_payload = json.dumps(TABLES, ensure_ascii=True, indent=2)
     figures_payload = json.dumps(FIGURES, ensure_ascii=True, indent=2)
+    references_payload = json.dumps(references, ensure_ascii=True, indent=2)
+    citation_aliases_payload = json.dumps(citation_aliases, ensure_ascii=True, indent=2)
     OUT_PATH.write_text(
         "window.PAPER_SECTIONS = " + sections_payload + ";\n"
         + "window.PAPER_FOOTNOTES = " + footnotes_payload + ";\n"
         + "window.PAPER_TABLES = " + tables_payload + ";\n"
-        + "window.PAPER_FIGURES = " + figures_payload + ";\n",
+        + "window.PAPER_FIGURES = " + figures_payload + ";\n"
+        + "window.PAPER_REFERENCES = " + references_payload + ";\n"
+        + "window.PAPER_CITATION_ALIASES = " + citation_aliases_payload + ";\n",
         encoding="utf-8",
     )
-    print(f"Wrote {OUT_PATH} with {len(sections)} sections.")
+    print(f"Wrote {OUT_PATH} with {len(sections)} sections and {len(references)} references.")
 
 
 if __name__ == "__main__":
