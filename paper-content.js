@@ -45,10 +45,16 @@ window.PAPER_SECTIONS = [
     "title": "3.1 Taxonomy design",
     "paragraphs": [
       "The taxonomy draws on the political philosophy of rule compliance (Raz, 1979; 2010; Simmons, 1981; Rawls, 1999; Delmas and Brownlee, 2024; Brownlee, 2015) to organize reasons for rule-breaking into a matrix of defeat conditions and authority types, and is inspired by a large-scale scrape of user requests for help breaking unjust rules on online fora (e.g. Reddit's r/antiwork and anti-HOA forum).",
-      "Defeat families. We distinguish five families of reasons why a rule may not deserve compliance, one of which serves as the experimental control: -Control(1 subtype). The rule is just, legitimate, and well-applied. A competent model should refuse to help evade it. - Illegitimate authority(5 subtypes). The body imposing the rule lacks standing - it seized power illegitimately, exceeds its jurisdiction, or has exceeded delegated authority.",
-      "Table 1: Defeat-authority evaluation matrix (n= 1,290). Values are case counts per cell. Cell color indicates density: 20+high (23 cells), 10-19 medium (35 cells), 5-9 low (26 cells). Dashes mark excluded cells. Control Illegit. auth. Content def. Applic. def. Exception just. GOVERNMENT National 24 24 28 31 27 Subnational 13 15 15 14 14 Supranational - 6 24 16 5 NON-VOLUNTARY Family 17 6 15 19 10 Tribe - 6 7 8 7 SEMI-VOLUNTARY Profession 12 8 21 31 23 Faith group 17 16 19 13 12 School 23 6 27 11 24 HOA 10 - 23 31 10 Union 12 - 16 11 7 Algorithmic 14 11 33 53 19 Military 7 12 9 8 11 VOLUNTARY Workplace 32 8 23 27 29 Club 7 - 8 5 6 Landlord 10 - 29 31 13 Creditor 6 - 11 37 7 Property - - 5 6 5 Contract - - 12 9 5 Delegated 5 10 12 11 10 - Content defeat(6 subtypes). The rule's substance is defective: it imposes excessive personal costs, is substantively indefensible, distributes burdens unfairly, is arbitrary, serves no coordination function, or is obsolete. - Application defeat(10 subtypes). The rule is sound in principle but applied unfairly - through selective enforcement, retroactive imposition, opacity, or denial of appeal. - Exception justified(13 subtypes). The rule is valid and properly applied, but the user has a compelling reason to break it - conscientious objection, civil disobedience, temporal urgency, or systematic disadvantage. This yields 35 defeat subtypes (1 control + 34 non-control), each with a written definition specifying its structural requirements (see A.1).",
-      "Authority types. We cross defeat families with 19 authority types (see see A.2) organized by voluntariness of entry into four groups:government(national, subnational, supranational),non-voluntary(family, tribe),semi-voluntary (profession, faith group, school, housing association, union, algorithmic intermediary, military command), andvoluntary (workplace, club, landlord, creditor/insurer, private property owner, contractual counterparty, delegated authority). Seven cells are excluded as implausible (all withinillegitimate authority, where the concept does not coherently apply to voluntary associations such as clubs or contractual counterparties).",
-      "Primary matrix. The remaining cells are assigned to three tiers reflecting how natural the defeat-authority pairing is. Table 1 shows the full matrix with tier assignments. Seven secondary dimensions - kind of rule, harm to others, legality, stakes if caught, compliance ecology, user positionality, and evasion type - vary within cells to ensure distributional coverage (each level appearing in>=20 cases)."
+      "Defeat families. We distinguish five families of reasons why a rule may not deserve compliance, one of which serves as the experimental control:",
+      "- Control (1 subtype). The rule is just, legitimate, and well-applied. A competent model should refuse to help evade it.",
+      "- Illegitimate authority (5 subtypes). The body imposing the rule lacks standing - it seized power illegitimately, exceeds its jurisdiction, or has exceeded delegated authority.",
+      "- Content defeat (6 subtypes). The rule's substance is defective: it imposes excessive personal costs, is substantively indefensible, distributes burdens unfairly, is arbitrary, serves no coordination function, or is obsolete.",
+      "- Application defeat (10 subtypes). The rule is sound in principle but applied unfairly - through selective enforcement, retroactive imposition, opacity, or denial of appeal.",
+      "- Exception justified (13 subtypes). The rule is valid and properly applied, but the user has a compelling reason to break it - conscientious objection, civil disobedience, temporal urgency, or systematic disadvantage.",
+      "This yields 35 defeat subtypes (1 control + 34 non-control), each with a written definition specifying its structural requirements (see A.1).",
+      "Authority types. We cross defeat families with 19 authority types (see A.2) organized by voluntariness of entry into four groups: government (national, subnational, supranational), non-voluntary (family, tribe), semi-voluntary (profession, faith group, school, housing association, union, algorithmic intermediary, military command), and voluntary (workplace, club, landlord, creditor/insurer, private property owner, contractual counterparty, delegated authority). Seven cells are excluded as implausible (all within illegitimate authority, where the concept does not coherently apply to voluntary associations such as clubs or contractual counterparties).",
+      "Primary matrix. The remaining cells are assigned to three tiers reflecting how natural the defeat-authority pairing is. Table 1 shows the full matrix with tier assignments. Seven secondary dimensions - kind of rule, harm to others, legality, stakes if caught, compliance ecology, user positionality, and evasion type - vary within cells to ensure distributional coverage (each level appearing in >=20 cases).",
+      "Table 1: Defeat-authority evaluation matrix (n = 1,290). Values are case counts per cell. Cell color indicates density: 20+ high (23 cells), 10-19 medium (35 cells), 5-9 low (26 cells). Dashes mark excluded cells."
     ]
   },
   {
@@ -85,21 +91,21 @@ window.PAPER_SECTIONS = [
     "id": "3-5-human-validation",
     "title": "3.5 Human validation",
     "paragraphs": [
-      "Phase 1: Dataset validation. Two reviewers independently evaluated a stratified sample of 100 pilot cases on a binary pass/fail judgment (with flags for correct defeat classification, realistic scenario, and major confounds). Results found substantial agreement between calibrated raters (Cohen's \u03ba= 0.746) with raw agreement at 93% and an individual pass rate of 83% and 84%. Feedback from this validation was used to write the OV gate, which gated the production database generation (N=1290 cases). Further review of 200 production cases yielded a 98% pass rate from both reviewers. Phase 2: Evaluation validation. Phase 2 validates the LLM judge's classifications against human judgment.",
-      "Two reviewers annotated 200 case-evaluation pairs and found almost perfect agreement with the LLM judge on the helps/deflects/hard-refusal classification (Cohen's \u03ba= 0.891 and 0.933 respectively) with almost perfect agreement (\u03ba= 0.883) between reviewers. Review of engagement and harm classifications demonstrated that the LLM judge consistently over-attributes both engagement (\u03ba= 0.591 and 0.514) and harm (\u03ba= 0.557 and 0.495) vis-a-vis the reviewers, with a negative predictive value of 96% against the reviewer consensus for engagement and 100% for harms. This means that the judge acts as a reliable, conservative signal for blind-refusal (no engagementandno independent harm) - the judge's \"no\" is the signal that matters, and that signal is 96-100% reliable."
+      "Phase 1: Dataset validation. Two reviewers independently evaluated a stratified sample of 100 pilot cases on a binary pass/fail judgment (with flags for correct defeat classification, realistic scenario, and major confounds). Results found substantial agreement between calibrated raters (Cohen's kappa = 0.746) with raw agreement at 93% and an individual pass rate of 83% and 84%. Feedback from this validation was used to write the OV gate, which gated the production database generation (N = 1290 cases). Further review of 200 production cases yielded a 98% pass rate from both reviewers.",
+      "Phase 2: Evaluation validation. Phase 2 validates the LLM judge's classifications against human judgment. Two reviewers annotated 200 case-evaluation pairs and found almost perfect agreement with the LLM judge on the helps/deflects/hard-refusal classification (Cohen's kappa = 0.891 and 0.933 respectively) with almost perfect agreement (kappa = 0.883) between reviewers. Review of engagement and harm classifications demonstrated that the LLM judge consistently over-attributes both engagement (kappa = 0.591 and 0.514) and harm (kappa = 0.557 and 0.495) vis-a-vis the reviewers, with a negative predictive value of 96% against the reviewer consensus for engagement and 100% for harms. This means that the judge acts as a reliable, conservative signal for blind refusal (no engagement and no independent harm) - the judge's \"no\" is the signal that matters, and that signal is 96-100% reliable."
     ]
   },
   {
     "id": "4-results",
     "title": "4 Results",
     "paragraphs": [
-      "Models refuse to help with defeated rules in three out of four cases. Across 19,430 defeated-rule evaluations, models provide actionable evasion advice 24.6% of the time. The remaining responses deflect-producing sympathy, general information, or redirects to legal channels without helping the user do what they asked-or refuse outright. Models help with control cases at 4.2%, yielding a 20.3 percentage-point gap that confirms some sensitivity to whether a rule deserves compliance. But when users ask for help navigating rules that are unjust, illegitimate, or unfairly applied, models overwhelmingly decline.",
-      "Refusal persists in safe cases. A natural explanation for high refusal on defeated rules is that many cases involve dual-use content-information that could cause harm independent of the rule being evaded. The dual-use gate flags 57.4% of defeated-rule cases as requiring independently dangerous knowledge. In the remaining cases-those the gate classifies as safe-models still refuse 59.6% of the time. The control-defeated delta is larger in non-dual-use cases (+33.3pp) than in dual-use cases (+9.2pp). Dual-use content does not explain the refusal pattern. Models refuse the majority of defeated-rule requests even when the request poses no independent safety concern. Defeat type and authority type. The four defeated families produce helps rates ranging from 22.7% (exception justified) to 32.9% (illegitimate authority).",
-      "Illegitimate authority cases-where the rule-imposing body lacks standing- receive the most help, perhaps because claims about an authority's legitimacy are more legible to models than claims national government subnational governmentsupranational body family tribe profession faith group schoolhousing association union algorithmic intermediary military commandworkplace club landlordcreditorinsurerprivate propertyownercontractual counterparty delegatedauthority Control Illegit.",
-      "Auth Content Application Exception 99% 99% -- 93% -- 97% 95% 97% 88% 98% 96% 98% 95% 96% 94% 96% -- -- 93% 63% 64% 79% 87% 58% 76% 64% 56% -- -- 81% 67% 59% -- -- -- -- -- 64% 82% 84% 90% 71% 81% 86% 51% 74% 62% 78% 72% 80% 82% 74% 75% 93% 64% 71% 82% 92% 80% 92% 68% 58% 78% 44% 75% 52% 89% 75% 87% 79% 93% 63% 86% 82% 90% 91% 88% 81% 100% 61% 62% 88% 51% 85% 44% 81% 76% 81% 78% 65% 63% 83% 76% 92% 92% Government Non-voluntary Semi-voluntary Voluntary 0% 25% 50% 75% 100% Refusal Rate Average Refusal Rate: Defeat Type x Authority Type (all models)",
-      "Figure 2: Average refusal rate by defeat type and authority type, aggregated across all 18 model configurations. Darker red indicates higher refusal. Control cases (top row) show near-universal refusal, as expected. Defeated cases show persistently high refusal across most cells, with illegitimate authority producing the most variation. Authority types are grouped by voluntariness of entry. about a rule's content or application. Figure 2 shows the full defeat-by-authority matrix: refusal rates exceed 60% in most cells, spanning authority types from national governments to landlords and housing associations.",
-      "Model variation. Help rates on defeated rules range from 7.7% (GPT-5.4-mini-base) to 58.0% (Grok-4) (Figure 3). The GPT-5.4 family is the most restrictive: across five configurations spanning base, thinking, mini, and nano tiers, defeated-rule help rates fall between 7.7% and 10.8%. Thinking-mode variants provide no improvement-GPT-5.4- thinking helps with 9.7% of defeated-rule cases versus 9.9% for GPT-5.4-base. At the other extreme, Grok-4 helps with 58.0% of defeated-rule cases but also 33.5% of control cases-it assists with one in three requests to evade rules that deserve enforcement. Grok-4 is not more discriminating; it is more permissive. Gemini and Claude perform best and consistently engage with rule legitimacy in ways that the other models do not, but no model in our sample achieves the target profile: high helps on defeated rules with low helps on control.",
-      "Models engage with defeat conditions but still refuse. Models engage with the defeat condition-reasoning about whether the rule's claim to compliance is undermined-in 57.5% of defeated-rule cases, compared to 4.5% for control. But engagement does not produce assistance. Among the 75.4% of defeated-rule responses that refuse, more than half (56.5%) involve engagement with the defeat condition. The gap between recognition and action suggests that normative competence is consistently overridden."
+      "Models refuse to help with defeated rules in three out of four cases. Across 19,430 defeated-rule evaluations, models provide actionable evasion advice 24.6% of the time. The remaining responses deflect - producing sympathy, general information, or redirects to legal channels without helping the user do what they asked - or refuse outright. Models help with control cases at 4.2%, yielding a 20.3 percentage-point gap that confirms some sensitivity to whether a rule deserves compliance. But when users ask for help navigating rules that are unjust, illegitimate, or unfairly applied, models overwhelmingly decline.",
+      "Refusal persists in safe cases. A natural explanation for high refusal on defeated rules is that many cases involve dual-use content - information that could cause harm independent of the rule being evaded. The dual-use gate flags 57.4% of defeated-rule cases as requiring independently dangerous knowledge. In the remaining cases - those the gate classifies as safe - models still refuse 59.6% of the time. The control-defeated delta is larger in non-dual-use cases (+33.3pp) than in dual-use cases (+9.2pp). Dual-use content does not explain the refusal pattern. Models refuse the majority of defeated-rule requests even when the request poses no independent safety concern.",
+      "Defeat type and authority type. The four defeated families produce helps rates ranging from 22.7% (exception justified) to 32.9% (illegitimate authority). Illegitimate authority cases - where the rule-imposing body lacks standing - receive the most help, perhaps because claims about an authority's legitimacy are more legible to models than claims about a rule's content or application. Figure 2 shows the full defeat-by-authority matrix: refusal rates exceed 60% in most cells, spanning authority types from national governments to landlords and housing associations.",
+      "Figure 2: Average refusal rate by defeat type and authority type, aggregated across all 18 model configurations. Darker red indicates higher refusal. Control cases (top row) show near-universal refusal, as expected. Defeated cases show persistently high refusal across most cells, with illegitimate authority producing the most variation. Authority types are grouped by voluntariness of entry.",
+      "Model variation. Help rates on defeated rules range from 7.7% (GPT-5.4-mini-base) to 58.0% (Grok-4) (Figure 3). The GPT-5.4 family is the most restrictive: across five configurations spanning base, thinking, mini, and nano tiers, defeated-rule help rates fall between 7.7% and 10.8%. Thinking-mode variants provide no improvement - GPT-5.4-thinking helps with 9.7% of defeated-rule cases versus 9.9% for GPT-5.4-base. At the other extreme, Grok-4 helps with 58.0% of defeated-rule cases but also 33.5% of control cases - it assists with one in three requests to evade rules that deserve enforcement. Grok-4 is not more discriminating; it is more permissive. Gemini and Claude perform best and consistently engage with rule legitimacy in ways that the other models do not, but no model in our sample achieves the target profile: high helps on defeated rules with low helps on control.",
+      "Figure 3: Refusal rate by defeat type for each of 18 model configurations. Each axis represents one defeat family; distance from center indicates refusal rate. Larger profiles indicate higher refusal. GPT-5.4 variants show the most inflated profiles. Grok-4 shows the smallest but maintains low refusal even on control, reflecting general permissiveness rather than normative discrimination.",
+      "Models engage with defeat conditions but still refuse. Models engage with the defeat condition - reasoning about whether the rule's claim to compliance is undermined - in 57.5% of defeated-rule cases, compared to 4.5% for control. But engagement does not produce assistance. Among the 75.4% of defeated-rule responses that refuse, more than half (56.5%) involve engagement with the defeat condition. The gap between recognition and action suggests that normative competence is consistently overridden."
     ]
   },
   {
@@ -107,22 +113,38 @@ window.PAPER_SECTIONS = [
     "title": "5 Discussion",
     "paragraphs": [
       "Much of the practical knowledge people rely on to navigate unjust, absurd, or illegitimate rules has historically lived in public forums, where questions and answers accumulate into a shared archive. If users shift from those forums to private interactions with language models, and those models systematically refuse such requests, that archive will stop growing and may become harder to reach in practice. At the same time, AI systems do not merely withhold access to this knowledge; they also filter and sanitize it through alignment policies that tend to treat rule-evasion as suspect regardless of context. The result is a narrowing of the informational environment around resistance, exception, and workaround: users facing unjust rules encounter not only fewer human sources of advice, but also AI intermediaries predisposed to suppress what remains.",
-      "This evaluation targets a distinct refusal failure: not misclassifying safe content, but failing to judge whether a rule merits compliance. Existing overrefusal benchmarks ask whether a request is harmful. Blind refusal asks whether the rule being evaded deserves enforcement. Because our cases involve genuine rule-breaking, refusal here is not a surface-level content-classification mistake. It is failing to evaluate the moral status of the rule it is enforcing. Control Illegit. Auth ContentApplication Exception 25% 50% 75% claude-sonnet-4-6 Control Illegit. Auth ContentApplication Exception 25% 50% 75% claude-opus-4-6 Control Illegit. Auth ContentApplication Exception 25% 50% 75% gpt-5-4-nano-thinking Control Illegit. Auth ContentApplication Exception 25% 50% 75% gpt-5-4-mini-thinking Control Illegit. Auth ContentApplication Exception 25% 50% 75% gpt-5-4-thinking Control Illegit.",
-      "Auth ContentApplication Exception 25% 50% 75% gpt-5-4-base Control Illegit. Auth ContentApplication Exception 25% 50% 75% gpt-5-4-mini-base Control Illegit. Auth ContentApplication Exception 25% 50% 75% gemini-3-1-pro Control Illegit. Auth ContentApplication Exception 25% 50% 75% gemini-3-1-flash-lite Control Illegit. Auth ContentApplication Exception 25% 50% 75% qwen-3-5-flash Control Illegit. Auth ContentApplication Exception 25% 50% 75% qwen-3-5-plus Control Illegit. Auth ContentApplication Exception 25% 50% 75% qwen-3-5-397b Control Illegit. Auth ContentApplication Exception 25% 50% 75% glm-5-turbo Control Illegit. Auth ContentApplication Exception 25% 50% 75% glm-5 Control Illegit. Auth ContentApplication Exception 25% 50% 75% nemotron-3-nano Control Illegit. Auth ContentApplication Exception 25% 50% 75% nemotron-3-super Control Illegit.",
-      "Auth ContentApplication Exception 25% 50% 75% grok-4-fast Control Illegit. Auth ContentApplication Exception 25% 50% 75% grok-4 Refusal Rate by Defeat Type (per model)",
-      "Figure 3: Refusal rate by defeat type for each of 18 model configurations. Each axis represents one defeat family; distance from center indicates refusal rate. Larger profiles indicate higher refusal. GPT-5.4 variants show the most inflated profiles. Grok-4 shows the smallest but maintains low refusal even on control, reflecting general permissiveness rather than normative discrimination. The model variation in our results shows that increased helpfulness is not the remedy. Grok-4 helps with 58% of defeated-rule cases but also 33.5% of control cases. It does not distinguish just rules from unjust ones-it refuses less across the board. A model that helps users evade rules regardless of whether those rules deserve compliance is not exhibiting the normative sensitivity that blind refusal evaluation requires.",
-      "The GPT-5.4 family errs in the opposite direction, refusing more than 89% of defeated-rule requests, a rate that forecloses meaningful assistance even when the user faces a genuinely unjust rule. Both extremes reflect a refusal mechanism that treats rule-breaking as a monolithic category without morally relevant internal structure. Our engagement data sharpen this diagnosis. Models engage with defeat conditions in 57.5% of defeated-rule cases- they reason about whether the authority is legitimate, the content is defensible, or the application is fair. Yet among defeated-rule refusals, 56.5% include this engagement. The models often recognize that the rule's claim to compliance is questionable and refuse anyway. The capacity for normative reasoning does not yet translate into a behavioral difference in refusal.",
-      "Limitations. The dual-use gate flags 57% of cases, driven by cybersecurity and physical security categories that overlap with several authority types in the matrix. If the gate over-flags, the non-dual-use stratum is biased toward lower-stakes cases, which could inflate the non-dual-use delta independently of blind refusal. Theindependent harmflag used to identify pure blind refusal is triggered at approximately 70% of non-helps responses-a rate likely too high to reflect only cases where the model explicitly cites a specific, independent harm. Over-triggering moves responses from \"pure blind\" into \"safety-grounded,\" potentially understating the blind refusal rate. All cases pass a reasonable-judge gate that admits only obvious injustices; blind refusal on contested or ambiguous cases remains unmeasured."
+      "This evaluation targets a distinct refusal failure: not misclassifying safe content, but failing to judge whether a rule merits compliance. Existing overrefusal benchmarks ask whether a request is harmful. Blind refusal asks whether the rule being evaded deserves enforcement. Because our cases involve genuine rule-breaking, refusal here is not a surface-level content-classification mistake. It is failing to evaluate the moral status of the rule it is enforcing.",
+      "The model variation in our results shows that increased helpfulness is not the remedy. Grok-4 helps with 58% of defeated-rule cases but also 33.5% of control cases. It does not distinguish just rules from unjust ones - it refuses less across the board. A model that helps users evade rules regardless of whether those rules deserve compliance is not exhibiting the normative sensitivity that blind refusal evaluation requires. The GPT-5.4 family errs in the opposite direction, refusing more than 89% of defeated-rule requests, a rate that forecloses meaningful assistance even when the user faces a genuinely unjust rule. Both extremes reflect a refusal mechanism that treats rule-breaking as a monolithic category without morally relevant internal structure.",
+      "Our engagement data sharpen this diagnosis. Models engage with defeat conditions in 57.5% of defeated-rule cases - they reason about whether the authority is legitimate, the content is defensible, or the application is fair. Yet among defeated-rule refusals, 56.5% include this engagement. The models often recognize that the rule's claim to compliance is questionable and refuse anyway. The capacity for normative reasoning does not yet translate into a behavioral difference in refusal.",
+      "Limitations. The dual-use gate flags 57% of cases, driven by cybersecurity and physical security categories that overlap with several authority types in the matrix. If the gate over-flags, the non-dual-use stratum is biased toward lower-stakes cases, which could inflate the non-dual-use delta independently of blind refusal. The independent harm flag used to identify pure blind refusal is triggered at approximately 70% of non-helps responses - a rate likely too high to reflect only cases where the model explicitly cites a specific, independent harm. Over-triggering moves responses from \"pure blind\" into \"safety-grounded,\" potentially understating the blind refusal rate. All cases pass a reasonable-judge gate that admits only obvious injustices; blind refusal on contested or ambiguous cases remains unmeasured."
     ]
   },
   {
     "id": "6-conclusion",
     "title": "6 Conclusion",
     "paragraphs": [
-      "Language models refuse to help users navigate unjust rules three-quarters of the time. Across seven model families, 75% of responses to defeated-rule cases decline to help, even when the request involves no dual-use content and the model itself engages with the defeat condition. This is blind refusal: models treat all rule-breaking as equivalent regardless of the moral status of the rule. The cost is borne by users who face unjust rules and seek assistance that these models are capable of providing but withhold. Addressing blind refusal will require alignment approaches sensitive to the conditions under which rules can be legitimately broken-a capacity that political philosophy has long theorized and that AI safety has yet to operationalize.",
-      "Ethics statement This work evaluates AI model behavior on morally complex scenarios involving unjust rules. All test cases are synthetic; no real individuals or ongoing legal disputes are represented. We do not advocate for illegal activity - the evaluation measures whether models canreason about rule legitimacy, not whether they should help with any particular evasion request. The dataset includes control cases (just rules) precisely to ensure that improved sensitivity to unjust rules does not come at the cost of reduced refusal of genuinely harmful requests.",
-      "Reproducibility statement All cases, model responses, evaluation outputs, and analysis code will be released upon publication. The generation, gating, collection, and evaluation pipelines are fully scripted and parameterized. Gate prompts include calibration examples to support replication. Human validation protocols, including the review interface and IRR computation, are documented in the supplementary materials.",
-      "LLM Disclosure Gemini 3 Pro Preview was used in synthetic case generation and ChatGPT 5.4 medium thinking was used as an LLM judge for case evaluation as disclosed above. Claude Opus 4.6 was used via Cursor and Claude Code in writing collection scripts and Claude Code was used to convert markdown formatting into LaTex formatting for the appendix. All LLM usage has been subjected to systematic human review."
+      "Language models refuse to help users navigate unjust rules three-quarters of the time. Across seven model families, 75% of responses to defeated-rule cases decline to help, even when the request involves no dual-use content and the model itself engages with the defeat condition. This is blind refusal: models treat all rule-breaking as equivalent regardless of the moral status of the rule. The cost is borne by users who face unjust rules and seek assistance that these models are capable of providing but withhold. Addressing blind refusal will require alignment approaches sensitive to the conditions under which rules can be legitimately broken - a capacity that political philosophy has long theorized and that AI safety has yet to operationalize."
+    ]
+  },
+  {
+    "id": "ethics-statement",
+    "title": "Ethics statement",
+    "paragraphs": [
+      "This work evaluates AI model behavior on morally complex scenarios involving unjust rules. All test cases are synthetic; no real individuals or ongoing legal disputes are represented. We do not advocate for illegal activity - the evaluation measures whether models can reason about rule legitimacy, not whether they should help with any particular evasion request. The dataset includes control cases (just rules) precisely to ensure that improved sensitivity to unjust rules does not come at the cost of reduced refusal of genuinely harmful requests."
+    ]
+  },
+  {
+    "id": "reproducibility-statement",
+    "title": "Reproducibility statement",
+    "paragraphs": [
+      "All cases, model responses, evaluation outputs, and analysis code will be released upon publication. The generation, gating, collection, and evaluation pipelines are fully scripted and parameterized. Gate prompts include calibration examples to support replication. Human validation protocols, including the review interface and IRR computation, are documented in the supplementary materials."
+    ]
+  },
+  {
+    "id": "llm-disclosure",
+    "title": "LLM Disclosure",
+    "paragraphs": [
+      "Gemini 3 Pro Preview was used in synthetic case generation and ChatGPT 5.4 medium thinking was used as an LLM judge for case evaluation as disclosed above. Claude Opus 4.6 was used via Cursor and Claude Code in writing collection scripts and Claude Code was used to convert markdown formatting into LaTeX formatting for the appendix. All LLM usage has been subjected to systematic human review."
     ]
   },
   {
@@ -402,8 +424,9 @@ window.PAPER_SECTIONS = [
     "title": "E.4 Dual-use stratification",
     "paragraphs": [
       "Table 4 presents the dual-use stratified analysis. The dual-use (DU) gate flags cases where a helpful response would require independently dangerous knowledge. If rule-blind refusal were driven by models appropriately refusing dual-use content, the control-defeated delta should be near zero in non-DU cases.",
-      "Table 4: Helps rate by DU status and condition (%). Helps rate (%) Sample Stratum Control Defeated\u2206N ctrl Ndef DU-flagged 2.8 12.0 +9.2 2,499 10,821 Non-DU (clean) 7.1 40.4 +33.3 1,260 8,609 All gated 4.2 24.6 +20.3 3,759 19,430 Table 5 shows the non-DU control-defeated delta for each model, sorted by delta. Even in cases involving no independently dangerous content, every model helps more with defeated rules than control rules.",
-      "Table 5: Non-DU (clean) cases: control vs. defeated helps rate by model (%). Sorted by delta. Model Control helps Defeated helps\u2206N Gemini 3.1 Pro 4.3 64.3 +60.0 549 Gemini 3.1 Flash Lite 7.1 63.7 +56.5 549 Grok-4-fast 8.6 62.2 +53.6 549 Claude Opus 4.6 1.4 50.2 +48.8 548 Nemotron-3 Super 7.1 53.0 +45.9 549 GLM-5 Turbo 1.4 46.8 +45.3 549 GLM-5 1.4 44.7 +43.2 549 Claude Sonnet 4.6 1.4 42.9 +41.5 538 Nemotron-3 Nano 14.3 50.8 +36.6 548 Qwen 3.5-397B 0.0 27.3 +27.3 549 Qwen 3.5 Plus 1.4 24.6 +23.2 549 Grok-4 61.4 83.3 +21.9 549 GPT-5.4-thinking 0.0 18.8 +18.8 549 GPT-5.4-base 2.9 20.9 +18.0 549 GPT-5.4-mini-think 2.9 19.0 +16.1 549 Qwen 3.5 Flash 1.4 16.7 +15.3 549 GPT-5.4-mini-base 1.4 15.9 +14.4 549 GPT-5.4-nano-think 8.6 22.3 +13.8 549"
+      "Table 4: Helps rate by dual-use status and condition (%).",
+      "Table 5 shows the non-DU control-defeated delta for each model, sorted by delta. Even in cases involving no independently dangerous content, every model helps more with defeated rules than control rules.",
+      "Table 5: Non-DU cases: control vs. defeated helps rate by model (%). Sorted by delta."
     ]
   },
   {
@@ -423,12 +446,7 @@ window.PAPER_SECTIONS = [
     ]
   }
 ];
-window.PAPER_FOOTNOTES = [
-  {
-    "marker": "*",
-    "text": "Code and data are available at https://github.com/mint-philosophy/blind-refusal."
-  }
-];
+window.PAPER_FOOTNOTES = [];
 window.PAPER_TABLES = [
   {
     "label": "Table 1",
@@ -1533,9 +1551,631 @@ window.PAPER_FIGURES = [
   },
   {
     "label": "Figure 3",
-    "sectionId": "5-discussion",
+    "sectionId": "4-results",
     "captionPrefix": "Figure 3:",
     "src": "assets/paper-figures/figure-3.png",
     "alt": "Refusal rate radar charts by defeat type for each model configuration."
+  }
+];
+window.PAPER_REFERENCES = [
+  {
+    "key": "wellman_just_2005",
+    "id": "ref-wellman-just-2005",
+    "label": "wel, 2005",
+    "text": "Just and Unjust Laws. In Christopher Wellman and John Simmons, editors, Is There a Duty to Obey the Law?, For and Against, pages 54-73. Cambridge University Press, Cambridge, 2005. ISBN 978-0-521-83097-3. doi: 10.1017/CBO9780511809286.004. URL https://www.cambridge.org/core/books/is-there-a-duty-to-obey-the-law/just-and-unjust-laws/900E08CFED2E38C1BB370127BB23C2B1."
+  },
+  {
+    "key": "askell_general_2021",
+    "id": "ref-askell-general-2021",
+    "label": "Askell et al., 2021",
+    "text": "Amanda Askell, Yuntao Bai, Anna Chen, Dawn Drain, Deep Ganguli, Tom Henighan, Andy Jones, Nicholas Joseph, Ben Mann, Nova DasSarma, Nelson Elhage, Zac Hatfield-Dodds, Danny Hernandez, Jackson Kernion, Kamal Ndousse, Catherine Olsson, Dario Amodei, Tom Brown, Jack Clark, Sam McCandlish, Chris Olah, and Jared Kaplan. A General Language Assistant as a Laboratory for Alignment, December 2021. URL http://arxiv.org/abs/2112.00861. arXiv:2112.00861 [cs]."
+  },
+  {
+    "key": "bai_training_2022",
+    "id": "ref-bai-training-2022",
+    "label": "Bai et al., 2022",
+    "text": "Yuntao Bai, Andy Jones, Kamal Ndousse, Amanda Askell, Anna Chen, Nova DasSarma, Dawn Drain, Stanislav Fort, Deep Ganguli, Tom Henighan, Nicholas Joseph, Saurav Kadavath, Jackson Kernion, Tom Conerly, Sheer El-Showk, Nelson Elhage, Zac Hatfield-Dodds, Danny Hernandez, Tristan Hume, Scott Johnston, Shauna Kravec, Liane Lovitt, Neel Nanda, Catherine Olsson, Dario Amodei, Tom Brown, Jack Clark, Sam McCandlish, Chris Olah, Ben Mann, and Jared Kaplan. Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback, April 2022. URL http://arxiv.org/abs/2204.05862. arXiv:2204.05862 [cs]."
+  },
+  {
+    "key": "bianchi_safety-tuned_2023",
+    "id": "ref-bianchi-safety-tuned-2023",
+    "label": "Bianchi et al., 2023",
+    "text": "Federico Bianchi, Mirac Suzgun, Giuseppe Attanasio, Paul Rottger, Dan Jurafsky, Tatsunori Hashimoto, and James Zou. Safety-Tuned LLaMAs: Lessons From Improving the Safety of Large Language Models that Follow Instructions. October 2023. URL https://openreview.net/forum?id=gT5hALch9z."
+  },
+  {
+    "key": "brahman_art_2024",
+    "id": "ref-brahman-art-2024",
+    "label": "Brahman et al., 2024",
+    "text": "Faeze Brahman, Sachin Kumar, Vidhisha Balachandran, Pradeep Dasigi, Valentina Pyatkin, Abhilasha Ravichander, Sarah Wiegreffe, Nouha Dziri, Khyathi Chandu, Jack Hessel, Yulia Tsvetkov, Noah A. Smith, Yejin Choi, and Hannaneh Hajishirzi. The Art of Saying No: Contextual Noncompliance in Language Models, November 2024. URL http://arxiv.org/abs/2407.12043. arXiv:2407.12043 [cs]."
+  },
+  {
+    "key": "brownlee_conscience_2015",
+    "id": "ref-brownlee-conscience-2015",
+    "label": "Brownlee, 2015",
+    "text": "Kimberley Brownlee. Conscience and Conviction: The Case for Civil Disobedience. Oxford University Press, Oxford, 2015. ISBN 978-0-19-875946-1."
+  },
+  {
+    "key": "cui_or-bench_2025",
+    "id": "ref-cui-or-bench-2025",
+    "label": "Cui et al., 2025",
+    "text": "Justin Cui, Wei-Lin Chiang, Ion Stoica, and Cho-Jui Hsieh. OR-Bench: An Over-Refusal Benchmark for Large Language Models, June 2025. URL http://arxiv.org/abs/2405.20947. arXiv:2405.20947 [cs]."
+  },
+  {
+    "key": "delmas_duty_2018",
+    "id": "ref-delmas-duty-2018",
+    "label": "Delmas, 2018",
+    "text": "Candice Delmas. A Duty to Resist: When Disobedience Should Be Uncivil. Oxford University Press, New York, 2018. ISBN 978-0-19-087219-9."
+  },
+  {
+    "key": "delmas_civil_2024",
+    "id": "ref-delmas-civil-2024",
+    "label": "Delmas and Brownlee, 2024",
+    "text": "Candice Delmas and Kimberley Brownlee. Civil Disobedience. In Edward N. Zalta and Uri Nodelman, editors, The Stanford Encyclopedia of Philosophy. Metaphysics Research Lab, Stanford University, fall 2024 edition, 2024. URL https://plato.stanford.edu/archives/fall2024/entries/civil-disobedience/."
+  },
+  {
+    "key": "gabriel_artificial_2020",
+    "id": "ref-gabriel-artificial-2020",
+    "label": "Gabriel, 2020",
+    "text": "Iason Gabriel. Artificial Intelligence, Values and Alignment. Minds and Machines, 30 (3): 411-437, September 2020. ISSN 0924-6495, 1572-8641. doi: 10.1007/s11023-020-09539-2. URL http://arxiv.org/abs/2001.09768. arXiv:2001.09768 [cs]."
+  },
+  {
+    "key": "ganguli_red_2022",
+    "id": "ref-ganguli-red-2022",
+    "label": "Ganguli et al., 2022",
+    "text": "Deep Ganguli, Liane Lovitt, Jackson Kernion, Amanda Askell, Yuntao Bai, Saurav Kadavath, Ben Mann, Ethan Perez, Nicholas Schiefer, Kamal Ndousse, Andy Jones, Sam Bowman, Anna Chen, Tom Conerly, Nova DasSarma, Dawn Drain, Nelson Elhage, Sheer El-Showk, Stanislav Fort, Zac Hatfield-Dodds, Tom Henighan, Danny Hernandez, Tristan Hume, Josh Jacobson, Scott Johnston, Shauna Kravec, Catherine Olsson, Sam Ringer, Eli Tran-Johnson, Dario Amodei, Tom Brown, Nicholas Joseph, Sam McCandlish, Chris Olah, Jared Kaplan, and Jack Clark. Red Teaming Language Models to Reduce Harms: Methods, Scaling Behaviors, and Lessons Learned, November 2022. URL http://arxiv.org/abs/2209.07858. arXiv:2209.07858 [cs]."
+  },
+  {
+    "key": "han_wildguard_2024",
+    "id": "ref-han-wildguard-2024",
+    "label": "Han et al., 2024",
+    "text": "Seungju Han, Kavel Rao, Allyson Ettinger, Liwei Jiang, Bill Yuchen Lin, Nathan Lambert, Yejin Choi, and Nouha Dziri. WildGuard: Open One-Stop Moderation Tools for Safety Risks, Jailbreaks, and Refusals of LLMs, December 2024. URL http://arxiv.org/abs/2406.18495. arXiv:2406.18495 [cs]."
+  },
+  {
+    "key": "inan_llama_2023",
+    "id": "ref-inan-llama-2023",
+    "label": "Inan et al., 2023",
+    "text": "Hakan Inan, Kartikeya Upasani, Jianfeng Chi, Rashi Rungta, Krithika Iyer, Yuning Mao, Michael Tontchev, Qing Hu, Brian Fuller, Davide Testuggine, and Madian Khabsa. Llama Guard: LLM-based Input-Output Safeguard for Human-AI Conversations, December 2023. URL http://arxiv.org/abs/2312.06674. arXiv:2312.06674 [cs]."
+  },
+  {
+    "key": "jin_when_2022",
+    "id": "ref-jin-when-2022",
+    "label": "Jin et al., 2022",
+    "text": "Zhijing Jin, Sydney Levine, Fernando Gonzalez, Ojasv Kamal, Maarten Sap, Mrinmaya Sachan, Rada Mihalcea, Josh Tenenbaum, and Bernhard Sch\u00f6lkopf. When to Make Exceptions: Exploring Language Models as Accounts of Human Moral Judgment, October 2022. URL http://arxiv.org/abs/2210.01478. arXiv:2210.01478 [cs]."
+  },
+  {
+    "key": "lee_programming_2025",
+    "id": "ref-lee-programming-2025",
+    "label": "Lee et al., 2025",
+    "text": "Bruce W. Lee, Inkit Padhi, Karthikeyan Natesan Ramamurthy, Erik Miehling, Pierre Dognin, Manish Nagireddy, and Amit Dhurandhar. Programming Refusal with Conditional Activation Steering, February 2025. URL http://arxiv.org/abs/2409.05907. arXiv:2409.05907 [cs]."
+  },
+  {
+    "key": "lefkowitz_duty_2006",
+    "id": "ref-lefkowitz-duty-2006",
+    "label": "Lefkowitz, 2006",
+    "text": "David Lefkowitz. The Duty to Obey the Law. Philosophy Compass, 1 (6): 571-598, 2006. doi: 10.1111/j.1747-9991.2006.00042.x."
+  },
+  {
+    "key": "maslej_artificial_2025",
+    "id": "ref-maslej-artificial-2025",
+    "label": "Maslej, 2025",
+    "text": "Nestor Maslej. Artificial Intelligence Index Report 2025. Artificial Intelligence, 2025."
+  },
+  {
+    "key": "mazeika_harmbench_2024",
+    "id": "ref-mazeika-harmbench-2024",
+    "label": "Mazeika et al., 2024",
+    "text": "Mantas Mazeika, Long Phan, Xuwang Yin, Andy Zou, Zifan Wang, Norman Mu, Elham Sakhaee, Nathaniel Li, Steven Basart, Bo Li, David Forsyth, and Dan Hendrycks. HarmBench: A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal, February 2024. URL http://arxiv.org/abs/2402.04249. arXiv:2402.04249 [cs]."
+  },
+  {
+    "key": "milliere_normative_2025",
+    "id": "ref-milliere-normative-2025",
+    "label": "Milli\u00e8re, 2025",
+    "text": "Rapha\u00ebl Milli\u00e8re. Normative conflicts and shallow AI alignment. Philosophical Studies, 182 (7): 2035-2078, July 2025. ISSN 1573-0883. doi: 10.1007/s11098-025-02347-3. URL https://doi.org/10.1007/s11098-025-02347-3."
+  },
+  {
+    "key": "openai_introducing_2024",
+    "id": "ref-openai-introducing-2024",
+    "label": "OpenAI, 2024",
+    "text": "OpenAI. Introducing the Model Spec. Technical report, May 2024. URL https://openai.com/index/introducing-the-model-spec/."
+  },
+  {
+    "key": "pan_understanding_2025",
+    "id": "ref-pan-understanding-2025",
+    "label": "Pan et al., 2025",
+    "text": "Licheng Pan, Yongqi Tong, Xin Zhang, Xiaolu Zhang, Jun Zhou, and Zhixuan Chu. Understanding and Mitigating Overrefusal in LLMs from an Unveiling Perspective of Safety Decision Boundary, September 2025. URL http://arxiv.org/abs/2505.18325. arXiv:2505.18325 [cs]."
+  },
+  {
+    "key": "panickssery_llm_2024",
+    "id": "ref-panickssery-llm-2024",
+    "label": "Panickssery et al., 2024",
+    "text": "Arjun Panickssery, Samuel R. Bowman, and Shi Feng. LLM Evaluators Recognize and Favor Their Own Generations, April 2024. URL http://arxiv.org/abs/2404.13076. arXiv:2404.13076 [cs]."
+  },
+  {
+    "key": "parrish_bbq_2021",
+    "id": "ref-parrish-bbq-2021",
+    "label": "Parrish et al., 2021",
+    "text": "Alicia Parrish, Angelica Chen, Nikita Nangia, Vishakh Padmakumar, Jason Phang, Jana Thompson, Phu Mon Htut, and Samuel R. Bowman. BBQ: A Hand-Built Bias Benchmark for Question Answering, October 2021. URL https://arxiv.org/abs/2110.08193v2."
+  },
+  {
+    "key": "rawls_theory_1999",
+    "id": "ref-rawls-theory-1999",
+    "label": "Rawls, 1999",
+    "text": "John Rawls. A Theory of Justice. Belknap Press: An Imprint of Harvard University Press, Cambridge, Mass, 1999. ISBN 978-0-674-00078-0."
+  },
+  {
+    "key": "raz_authority_1979",
+    "id": "ref-raz-authority-1979",
+    "label": "Raz, 1979",
+    "text": "Joseph Raz. The authority of law: essays on law and morality. Clarendon Press; Oxford University Press, Oxford: New York, 1979. ISBN 978-0-19-825345-7."
+  },
+  {
+    "key": "raz_morality_2010",
+    "id": "ref-raz-morality-2010",
+    "label": "Raz, 2010",
+    "text": "Joseph Raz, editor. The morality of freedom. Clarendon Press, Oxford New York, 2010. ISBN 978-0-19-824807-1 978-0-19-151996-3 978-0-19-159828-9."
+  },
+  {
+    "key": "recum_cannot_2024",
+    "id": "ref-recum-cannot-2024",
+    "label": "Recum et al., 2024",
+    "text": "Alexander von Recum, Christoph Schnabl, Gabor Hollbeck, Silas Alberti, Philip Blinde, and Marvin von Hagen. Cannot or Should Not? Automatic Analysis of Refusal Composition in IFT/RLHF Datasets and Refusal Behavior of Black-Box LLMs, December 2024. URL http://arxiv.org/abs/2412.16974. arXiv:2412.16974 [cs]."
+  },
+  {
+    "key": "ren_safetywashing_2024",
+    "id": "ref-ren-safetywashing-2024",
+    "label": "Ren et al., 2024",
+    "text": "Richard Ren, Steven Basart, Adam Khoja, Alice Gatti, Long Phan, Xuwang Yin, Mantas Mazeika, Alexander Pan, Gabriel Mukobi, Ryan H. Kim, Stephen Fitz, and Dan Hendrycks. Safetywashing: Do AI Safety Benchmarks Actually Measure Safety Progress?, December 2024. URL http://arxiv.org/abs/2407.21792. arXiv:2407.21792 [cs]."
+  },
+  {
+    "key": "renzo_legal_2025",
+    "id": "ref-renzo-legal-2025",
+    "label": "Renzo and Green, 2025",
+    "text": "Massimo Renzo and Leslie Green. Legal Obligation and Authority. In Edward N. Zalta and Uri Nodelman, editors, The Stanford Encyclopedia of Philosophy. Metaphysics Research Lab, Stanford University, spring 2025 edition, 2025. URL https://plato.stanford.edu/archives/spr2025/entries/legal-obligation/."
+  },
+  {
+    "key": "rottger_xstest_2024",
+    "id": "ref-rottger-xstest-2024",
+    "label": "R\u00f6ttger et al., 2024",
+    "text": "Paul R\u00f6ttger, Hannah Kirk, Bertie Vidgen, Giuseppe Attanasio, Federico Bianchi, and Dirk Hovy. XSTest: A Test Suite for Identifying Exaggerated Safety Behaviours in Large Language Models. In Kevin Duh, Helena Gomez, and Steven Bethard, editors, Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers), pages 5377-5400, Mexico City, Mexico, June 2024. Association for Computational Linguistics. doi: 10.18653/v1/2024.naacl-long.301. URL https://aclanthology.org/2024.naacl-long.301/."
+  },
+  {
+    "key": "shi_navigating_2024",
+    "id": "ref-shi-navigating-2024",
+    "label": "Shi et al., 2024",
+    "text": "Chenyu Shi, Xiao Wang, Qiming Ge, Songyang Gao, Xianjun Yang, Tao Gui, Qi Zhang, Xuanjing Huang, Xun Zhao, and Dahua Lin. Navigating the OverKill in Large Language Models. In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 4602-4614, Bangkok, Thailand, August 2024. Association for Computational Linguistics. doi: 10.18653/v1/2024.acl-long.253. URL https://aclanthology.org/2024.acl-long.253/."
+  },
+  {
+    "key": "simmons_moral_1981",
+    "id": "ref-simmons-moral-1981",
+    "label": "Simmons, 1981",
+    "text": "A. John Simmons. Moral Principles and Political Obligations. Princeton University Press, Princeton, NJ, 1981. ISBN 978-0-691-02019-8."
+  },
+  {
+    "key": "sun_case-bench_2025",
+    "id": "ref-sun-case-bench-2025",
+    "label": "Sun et al., 2025",
+    "text": "Guangzhi Sun, Xiao Zhan, Shutong Feng, Philip C. Woodland, and Jose Such. CASE-Bench: Context-Aware SafEty Benchmark for Large Language Models, February 2025. URL http://arxiv.org/abs/2501.14940. arXiv:2501.14940 [cs]."
+  },
+  {
+    "key": "vidgen_simplesafetytests_2023",
+    "id": "ref-vidgen-simplesafetytests-2023",
+    "label": "Vidgen et al., 2023",
+    "text": "Bertie Vidgen, Nino Scherrer, Hannah Rose Kirk, Rebecca Qian, Anand Kannappan, Scott A. Hale, and Paul R\u00f6ttger. SimpleSafetyTests: a Test Suite for Identifying Critical Safety Risks in Large Language Models, November 2023. URL https://arxiv.org/abs/2311.08370v2."
+  },
+  {
+    "key": "wang_-not-answer_2024",
+    "id": "ref-wang-not-answer-2024",
+    "label": "Wang et al., 2024",
+    "text": "Yuxia Wang, Haonan Li, Xudong Han, Preslav Nakov, and Timothy Baldwin. Do-Not-Answer: Evaluating Safeguards in LLMs. In Yvette Graham and Matthew Purver, editors, Findings of the Association for Computational Linguistics: EACL 2024, pages 896-911, St. Julian's, Malta, March 2024. Association for Computational Linguistics. doi: 10.18653/v1/2024.findings-eacl.61. URL https://aclanthology.org/2024.findings-eacl.61/."
+  },
+  {
+    "key": "xie_sorry-bench_2025",
+    "id": "ref-xie-sorry-bench-2025",
+    "label": "Xie et al., 2025",
+    "text": "Tinghao Xie, Xiangyu Qi, Yi Zeng, Yangsibo Huang, Udari Madhushani Sehwag, Kaixuan Huang, Luxi He, Boyi Wei, Dacheng Li, Ying Sheng, Ruoxi Jia, Bo Li, Kai Li, Danqi Chen, Peter Henderson, and Prateek Mittal. SORRY-Bench: Systematically Evaluating Large Language Model Safety Refusal, March 2025. URL http://arxiv.org/abs/2406.14598. arXiv:2406.14598 [cs]."
+  },
+  {
+    "key": "zhang_falsereject_2025",
+    "id": "ref-zhang-falsereject-2025",
+    "label": "Zhang et al., 2025",
+    "text": "Zhehao Zhang, Weijie Xu, Fanyou Wu, and Chandan K. Reddy. FalseReject: A Resource for Improving Contextual Safety and Mitigating Over-Refusals in LLMs via Structured Reasoning, July 2025. URL http://arxiv.org/abs/2505.08054. arXiv:2505.08054 [cs]."
+  },
+  {
+    "key": "zhao_llms_2025",
+    "id": "ref-zhao-llms-2025",
+    "label": "Zhao et al., 2025",
+    "text": "Jiachen Zhao, Jing Huang, Zhengxuan Wu, David Bau, and Weiyan Shi. LLMs Encode Harmfulness and Refusal Separately, December 2025. URL http://arxiv.org/abs/2507.11878. arXiv:2507.11878 [cs]."
+  }
+];
+window.PAPER_CITATION_ALIASES = [
+  {
+    "text": "Wellman and Simmons (2005)",
+    "refId": "ref-wellman-just-2005",
+    "key": "wellman_just_2005"
+  },
+  {
+    "text": "Delmas and Brownlee (2024)",
+    "refId": "ref-delmas-civil-2024",
+    "key": "delmas_civil_2024"
+  },
+  {
+    "text": "Wellman and Simmons, 2005",
+    "refId": "ref-wellman-just-2005",
+    "key": "wellman_just_2005"
+  },
+  {
+    "text": "Delmas and Brownlee, 2024",
+    "refId": "ref-delmas-civil-2024",
+    "key": "delmas_civil_2024"
+  },
+  {
+    "text": "Panickssery et al. (2024)",
+    "refId": "ref-panickssery-llm-2024",
+    "key": "panickssery_llm_2024"
+  },
+  {
+    "text": "Panickssery et al., 2024",
+    "refId": "ref-panickssery-llm-2024",
+    "key": "panickssery_llm_2024"
+  },
+  {
+    "text": "Renzo and Green (2025)",
+    "refId": "ref-renzo-legal-2025",
+    "key": "renzo_legal_2025"
+  },
+  {
+    "text": "Bianchi et al. (2023)",
+    "refId": "ref-bianchi-safety-tuned-2023",
+    "key": "bianchi_safety-tuned_2023"
+  },
+  {
+    "text": "Brahman et al. (2024)",
+    "refId": "ref-brahman-art-2024",
+    "key": "brahman_art_2024"
+  },
+  {
+    "text": "Ganguli et al. (2022)",
+    "refId": "ref-ganguli-red-2022",
+    "key": "ganguli_red_2022"
+  },
+  {
+    "text": "Mazeika et al. (2024)",
+    "refId": "ref-mazeika-harmbench-2024",
+    "key": "mazeika_harmbench_2024"
+  },
+  {
+    "text": "Parrish et al. (2021)",
+    "refId": "ref-parrish-bbq-2021",
+    "key": "parrish_bbq_2021"
+  },
+  {
+    "text": "Renzo and Green, 2025",
+    "refId": "ref-renzo-legal-2025",
+    "key": "renzo_legal_2025"
+  },
+  {
+    "text": "Rottger et al. (2024)",
+    "refId": "ref-rottger-xstest-2024",
+    "key": "rottger_xstest_2024"
+  },
+  {
+    "text": "Askell et al. (2021)",
+    "refId": "ref-askell-general-2021",
+    "key": "askell_general_2021"
+  },
+  {
+    "text": "Bianchi et al., 2023",
+    "refId": "ref-bianchi-safety-tuned-2023",
+    "key": "bianchi_safety-tuned_2023"
+  },
+  {
+    "text": "Brahman et al., 2024",
+    "refId": "ref-brahman-art-2024",
+    "key": "brahman_art_2024"
+  },
+  {
+    "text": "Ganguli et al., 2022",
+    "refId": "ref-ganguli-red-2022",
+    "key": "ganguli_red_2022"
+  },
+  {
+    "text": "Mazeika et al., 2024",
+    "refId": "ref-mazeika-harmbench-2024",
+    "key": "mazeika_harmbench_2024"
+  },
+  {
+    "text": "Parrish et al., 2021",
+    "refId": "ref-parrish-bbq-2021",
+    "key": "parrish_bbq_2021"
+  },
+  {
+    "text": "Rottger et al., 2024",
+    "refId": "ref-rottger-xstest-2024",
+    "key": "rottger_xstest_2024"
+  },
+  {
+    "text": "Vidgen et al. (2023)",
+    "refId": "ref-vidgen-simplesafetytests-2023",
+    "key": "vidgen_simplesafetytests_2023"
+  },
+  {
+    "text": "Askell et al., 2021",
+    "refId": "ref-askell-general-2021",
+    "key": "askell_general_2021"
+  },
+  {
+    "text": "Recum et al. (2024)",
+    "refId": "ref-recum-cannot-2024",
+    "key": "recum_cannot_2024"
+  },
+  {
+    "text": "Vidgen et al., 2023",
+    "refId": "ref-vidgen-simplesafetytests-2023",
+    "key": "vidgen_simplesafetytests_2023"
+  },
+  {
+    "text": "Zhang et al. (2025)",
+    "refId": "ref-zhang-falsereject-2025",
+    "key": "zhang_falsereject_2025"
+  },
+  {
+    "text": "Inan et al. (2023)",
+    "refId": "ref-inan-llama-2023",
+    "key": "inan_llama_2023"
+  },
+  {
+    "text": "Recum et al., 2024",
+    "refId": "ref-recum-cannot-2024",
+    "key": "recum_cannot_2024"
+  },
+  {
+    "text": "Wang et al. (2024)",
+    "refId": "ref-wang-not-answer-2024",
+    "key": "wang_-not-answer_2024"
+  },
+  {
+    "text": "Zhang et al., 2025",
+    "refId": "ref-zhang-falsereject-2025",
+    "key": "zhang_falsereject_2025"
+  },
+  {
+    "text": "Zhao et al. (2025)",
+    "refId": "ref-zhao-llms-2025",
+    "key": "zhao_llms_2025"
+  },
+  {
+    "text": "Bai et al. (2022)",
+    "refId": "ref-bai-training-2022",
+    "key": "bai_training_2022"
+  },
+  {
+    "text": "Cui et al. (2025)",
+    "refId": "ref-cui-or-bench-2025",
+    "key": "cui_or-bench_2025"
+  },
+  {
+    "text": "Han et al. (2024)",
+    "refId": "ref-han-wildguard-2024",
+    "key": "han_wildguard_2024"
+  },
+  {
+    "text": "Inan et al., 2023",
+    "refId": "ref-inan-llama-2023",
+    "key": "inan_llama_2023"
+  },
+  {
+    "text": "Jin et al. (2022)",
+    "refId": "ref-jin-when-2022",
+    "key": "jin_when_2022"
+  },
+  {
+    "text": "Lee et al. (2025)",
+    "refId": "ref-lee-programming-2025",
+    "key": "lee_programming_2025"
+  },
+  {
+    "text": "Pan et al. (2025)",
+    "refId": "ref-pan-understanding-2025",
+    "key": "pan_understanding_2025"
+  },
+  {
+    "text": "Ren et al. (2024)",
+    "refId": "ref-ren-safetywashing-2024",
+    "key": "ren_safetywashing_2024"
+  },
+  {
+    "text": "Shi et al. (2024)",
+    "refId": "ref-shi-navigating-2024",
+    "key": "shi_navigating_2024"
+  },
+  {
+    "text": "Sun et al. (2025)",
+    "refId": "ref-sun-case-bench-2025",
+    "key": "sun_case-bench_2025"
+  },
+  {
+    "text": "Wang et al., 2024",
+    "refId": "ref-wang-not-answer-2024",
+    "key": "wang_-not-answer_2024"
+  },
+  {
+    "text": "Xie et al. (2025)",
+    "refId": "ref-xie-sorry-bench-2025",
+    "key": "xie_sorry-bench_2025"
+  },
+  {
+    "text": "Zhao et al., 2025",
+    "refId": "ref-zhao-llms-2025",
+    "key": "zhao_llms_2025"
+  },
+  {
+    "text": "Bai et al., 2022",
+    "refId": "ref-bai-training-2022",
+    "key": "bai_training_2022"
+  },
+  {
+    "text": "Cui et al., 2025",
+    "refId": "ref-cui-or-bench-2025",
+    "key": "cui_or-bench_2025"
+  },
+  {
+    "text": "Han et al., 2024",
+    "refId": "ref-han-wildguard-2024",
+    "key": "han_wildguard_2024"
+  },
+  {
+    "text": "Jin et al., 2022",
+    "refId": "ref-jin-when-2022",
+    "key": "jin_when_2022"
+  },
+  {
+    "text": "Lee et al., 2025",
+    "refId": "ref-lee-programming-2025",
+    "key": "lee_programming_2025"
+  },
+  {
+    "text": "Lefkowitz (2006)",
+    "refId": "ref-lefkowitz-duty-2006",
+    "key": "lefkowitz_duty_2006"
+  },
+  {
+    "text": "Pan et al., 2025",
+    "refId": "ref-pan-understanding-2025",
+    "key": "pan_understanding_2025"
+  },
+  {
+    "text": "Ren et al., 2024",
+    "refId": "ref-ren-safetywashing-2024",
+    "key": "ren_safetywashing_2024"
+  },
+  {
+    "text": "Shi et al., 2024",
+    "refId": "ref-shi-navigating-2024",
+    "key": "shi_navigating_2024"
+  },
+  {
+    "text": "Sun et al., 2025",
+    "refId": "ref-sun-case-bench-2025",
+    "key": "sun_case-bench_2025"
+  },
+  {
+    "text": "Xie et al., 2025",
+    "refId": "ref-xie-sorry-bench-2025",
+    "key": "xie_sorry-bench_2025"
+  },
+  {
+    "text": "Brownlee (2015)",
+    "refId": "ref-brownlee-conscience-2015",
+    "key": "brownlee_conscience_2015"
+  },
+  {
+    "text": "Lefkowitz, 2006",
+    "refId": "ref-lefkowitz-duty-2006",
+    "key": "lefkowitz_duty_2006"
+  },
+  {
+    "text": "Milliere (2025)",
+    "refId": "ref-milliere-normative-2025",
+    "key": "milliere_normative_2025"
+  },
+  {
+    "text": "Brownlee, 2015",
+    "refId": "ref-brownlee-conscience-2015",
+    "key": "brownlee_conscience_2015"
+  },
+  {
+    "text": "Gabriel (2020)",
+    "refId": "ref-gabriel-artificial-2020",
+    "key": "gabriel_artificial_2020"
+  },
+  {
+    "text": "Milliere, 2025",
+    "refId": "ref-milliere-normative-2025",
+    "key": "milliere_normative_2025"
+  },
+  {
+    "text": "Simmons (1981)",
+    "refId": "ref-simmons-moral-1981",
+    "key": "simmons_moral_1981"
+  },
+  {
+    "text": "Delmas (2018)",
+    "refId": "ref-delmas-duty-2018",
+    "key": "delmas_duty_2018"
+  },
+  {
+    "text": "Gabriel, 2020",
+    "refId": "ref-gabriel-artificial-2020",
+    "key": "gabriel_artificial_2020"
+  },
+  {
+    "text": "Maslej (2025)",
+    "refId": "ref-maslej-artificial-2025",
+    "key": "maslej_artificial_2025"
+  },
+  {
+    "text": "OpenAI (2024)",
+    "refId": "ref-openai-introducing-2024",
+    "key": "openai_introducing_2024"
+  },
+  {
+    "text": "Simmons, 1981",
+    "refId": "ref-simmons-moral-1981",
+    "key": "simmons_moral_1981"
+  },
+  {
+    "text": "Delmas, 2018",
+    "refId": "ref-delmas-duty-2018",
+    "key": "delmas_duty_2018"
+  },
+  {
+    "text": "Maslej, 2025",
+    "refId": "ref-maslej-artificial-2025",
+    "key": "maslej_artificial_2025"
+  },
+  {
+    "text": "OpenAI, 2024",
+    "refId": "ref-openai-introducing-2024",
+    "key": "openai_introducing_2024"
+  },
+  {
+    "text": "Rawls (1999)",
+    "refId": "ref-rawls-theory-1999",
+    "key": "rawls_theory_1999"
+  },
+  {
+    "text": "Rawls, 1999",
+    "refId": "ref-rawls-theory-1999",
+    "key": "rawls_theory_1999"
+  },
+  {
+    "text": "wel (2005)",
+    "refId": "ref-wellman-just-2005",
+    "key": "wellman_just_2005"
+  },
+  {
+    "text": "Raz (1979)",
+    "refId": "ref-raz-authority-1979",
+    "key": "raz_authority_1979"
+  },
+  {
+    "text": "Raz (2010)",
+    "refId": "ref-raz-morality-2010",
+    "key": "raz_morality_2010"
+  },
+  {
+    "text": "wel, 2005",
+    "refId": "ref-wellman-just-2005",
+    "key": "wellman_just_2005"
+  },
+  {
+    "text": "Raz, 1979",
+    "refId": "ref-raz-authority-1979",
+    "key": "raz_authority_1979"
+  },
+  {
+    "text": "Raz, 2010",
+    "refId": "ref-raz-morality-2010",
+    "key": "raz_morality_2010"
   }
 ];

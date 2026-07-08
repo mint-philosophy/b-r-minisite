@@ -13,6 +13,11 @@ const readingLayout = document.querySelector(".reading-layout");
 const leftRail = document.querySelector(".left-rail");
 const rightRail = document.querySelector(".right-rail");
 const hookStory = document.querySelector(".hook-story");
+const hookCanvas = document.querySelector(".hook-canvas");
+const backToTextCue = document.getElementById("backToTextCue");
+const PAPER_RAIL_COLLAPSE_WIDTH = 1280;
+let citationReturnTarget = null;
+let citationReturnScrollY = 0;
 
 function escapeHtml(value) {
   return String(value)
@@ -30,13 +35,36 @@ function paragraphClass(paragraph) {
   return "";
 }
 
-function linkifyText(value) {
-  const escaped = escapeHtml(value);
-  return escaped.replace(/https?:\/\/[^\s<]+/g, (match) => {
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function linkifyUrls(value) {
+  return value.replace(/https?:\/\/[^\s<]+/g, (match) => {
     const trailing = match.match(/[).,;:]+$/)?.[0] || "";
     const href = trailing ? match.slice(0, -trailing.length) : match;
     return `<a href="${href}" target="_blank" rel="noreferrer">${href}</a>${trailing}`;
   });
+}
+
+const citationAliases = Array.isArray(window.PAPER_CITATION_ALIASES)
+  ? window.PAPER_CITATION_ALIASES
+  : [];
+
+function linkifyCitations(value) {
+  return citationAliases.reduce((html, alias) => {
+    if (!alias?.text || !alias?.refId) return html;
+    const escapedAlias = escapeRegExp(escapeHtml(alias.text));
+    const pattern = new RegExp(`(^|[^A-Za-z0-9])(${escapedAlias})(?=$|[^A-Za-z0-9])`, "g");
+    return html.replace(pattern, (match, prefix, citation) => {
+      return `${prefix}<a class="citation-link" href="#${escapeHtml(alias.refId)}">${citation}</a>`;
+    });
+  }, value);
+}
+
+function linkifyText(value) {
+  const escaped = escapeHtml(value);
+  return linkifyCitations(linkifyUrls(escaped));
 }
 
 const figuresByCaption = new Map(
@@ -54,7 +82,7 @@ const tablesByCaption = new Map(
 function renderPaperFootnotes() {
   if (!paperFootnotes || !Array.isArray(window.PAPER_FOOTNOTES)) return;
 
-  const notes = window.PAPER_FOOTNOTES.filter((note) => note.marker !== "*");
+  const notes = window.PAPER_FOOTNOTES;
   paperFootnotes.hidden = notes.length === 0;
   paperFootnotes.innerHTML = notes.map((note) => `
     <p><sup>${escapeHtml(note.marker)}</sup> ${linkifyText(note.text)}</p>
@@ -62,8 +90,9 @@ function renderPaperFootnotes() {
 }
 
 function renderFigure(figure, caption) {
+  const id = figure.label ? ` id="${escapeHtml(figure.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""))}"` : "";
   return `
-    <figure class="paper-figure">
+    <figure${id} class="paper-figure">
       <a class="paper-figure-link" href="${escapeHtml(figure.src)}" target="_blank" rel="noreferrer" aria-label="Open ${escapeHtml(figure.label)} full size">
         <img src="${escapeHtml(figure.src)}" alt="${escapeHtml(figure.alt)}">
       </a>
@@ -94,6 +123,20 @@ function renderTable(table) {
       </div>
     </figure>
   `;
+}
+
+function renderReferences(section) {
+  const references = Array.isArray(window.PAPER_REFERENCES) && window.PAPER_REFERENCES.length
+    ? window.PAPER_REFERENCES
+    : (section.paragraphs || []).map((entry, index) => ({
+        id: `ref-${index + 1}`,
+        text: entry,
+      }));
+
+  return `<ol class="reference-list">${references.map((reference) => {
+    const id = reference.id ? ` id="${escapeHtml(reference.id)}"` : "";
+    return `<li${id}>${linkifyUrls(escapeHtml(reference.text || ""))}</li>`;
+  }).join("")}</ol>`;
 }
 
 function sectionNumber(section) {
@@ -133,7 +176,7 @@ function renderPaperSections() {
     if (appendixSection) appendixStarted = true;
 
     const sectionBody = section.id === "references"
-      ? `<ol class="reference-list">${section.paragraphs.map((entry) => `<li>${linkifyText(entry)}</li>`).join("")}</ol>`
+      ? renderReferences(section)
       : section.paragraphs.map((paragraph) => {
           const table = Array.from(tablesByCaption.entries()).find(([captionPrefix, candidate]) => {
             return candidate.sectionId === section.id && paragraph.startsWith(captionPrefix);
@@ -170,6 +213,31 @@ function renderPaperSections() {
 renderPaperFootnotes();
 renderPaperSections();
 
+document.addEventListener("click", (event) => {
+  const citationLink = event.target.closest("a.citation-link");
+  if (!citationLink || !backToTextCue) return;
+
+  citationReturnTarget = citationLink;
+  citationReturnScrollY = window.scrollY;
+  window.setTimeout(() => {
+    backToTextCue.hidden = false;
+  }, 80);
+});
+
+backToTextCue?.addEventListener("click", () => {
+  if (citationReturnTarget?.isConnected) {
+    citationReturnTarget.scrollIntoView({ block: "center" });
+    citationReturnTarget.focus({ preventScroll: true });
+  } else {
+    window.scrollTo({ top: citationReturnScrollY, behavior: "smooth" });
+  }
+
+  if (window.location.hash.startsWith("#ref-")) {
+    history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+  }
+  backToTextCue.hidden = true;
+});
+
 function scrollToCurrentHash() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("section") || window.location.hash.slice(1);
@@ -177,6 +245,18 @@ function scrollToCurrentHash() {
   const target = document.getElementById(decodeURIComponent(id));
   if (target) {
     target.scrollIntoView({ block: "start" });
+    const applyHashActive = () => {
+      updateStatus();
+      const activeHref = target.id.startsWith("ref-") ? "#references" : `#${target.id}`;
+      document.querySelectorAll(".nav-link, .left-rail a").forEach((link) => {
+        const active = link.getAttribute("href") === activeHref;
+        link.classList.toggle("active", active);
+        if (active) link.classList.remove("active-parent");
+      });
+    };
+    setTimeout(applyHashActive, 0);
+    setTimeout(applyHashActive, 120);
+    setTimeout(applyHashActive, 900);
   }
 }
 
@@ -194,9 +274,9 @@ const generatedSearchItems = Array.isArray(window.PAPER_SECTIONS)
 
 const searchIndex = [
   { title: "Hook", desc: "Media Sovereignty Act user prompt", href: "#hook" },
-  { title: "Responses", desc: "Deflects versus helps comparison", href: "#hook-responses" },
+  { title: "Demo", desc: "Scroll-driven user, rule, and robot refusal animation", href: "#hook-responses" },
   { title: "Paper", desc: "Title, authors, arXiv, PDF, GitHub", href: "#paper" },
-  { title: "Hook Source", desc: "Figure case and source notes", href: "#source" },
+  { title: "About", desc: "Site credit and citation", href: "#about-site" },
   ...generatedSearchItems
 ];
 
@@ -236,19 +316,23 @@ function setRailVariable(name, value) {
 function measureRailColumns() {
   if (!leftRail || !rightRail) return null;
   const wasFixed = document.body.classList.contains("paper-rails-fixed");
+  const notesWereFixed = document.body.classList.contains("paper-notes-fixed");
   if (wasFixed) document.body.classList.remove("paper-rails-fixed");
+  if (notesWereFixed) document.body.classList.remove("paper-notes-fixed");
 
   const leftRect = leftRail.getBoundingClientRect();
   const rightRect = rightRail.getBoundingClientRect();
 
   if (wasFixed) document.body.classList.add("paper-rails-fixed");
+  if (notesWereFixed) document.body.classList.add("paper-notes-fixed");
 
   return { leftRect, rightRect };
 }
 
 function updatePaperRails() {
-  if (!readingLayout || !leftRail || !rightRail || window.innerWidth <= 980) {
+  if (!readingLayout || !leftRail || !rightRail || window.innerWidth <= PAPER_RAIL_COLLAPSE_WIDTH) {
     document.body.classList.remove("paper-rails-fixed");
+    document.body.classList.remove("paper-notes-fixed");
     return;
   }
 
@@ -257,10 +341,13 @@ function updatePaperRails() {
   const top = Math.max(18, bannerHeight + 18);
   const height = Math.max(220, window.innerHeight - top - statusHeight - 18);
   const layoutRect = readingLayout.getBoundingClientRect();
-  const shouldFix = layoutRect.top <= top && layoutRect.bottom >= top + height;
+  const hookRect = hookStory?.getBoundingClientRect();
+  const shouldFixMap = hookRect ? hookRect.bottom > 0 || layoutRect.bottom > 0 : layoutRect.bottom > 0;
+  const shouldFixNotes = layoutRect.top <= top && layoutRect.bottom >= top + height;
 
-  if (!shouldFix) {
+  if (!shouldFixMap) {
     document.body.classList.remove("paper-rails-fixed");
+    document.body.classList.remove("paper-notes-fixed");
     return;
   }
 
@@ -275,54 +362,83 @@ function updatePaperRails() {
   setRailVariable("--right-rail-width", railRects.rightRect.width);
 
   document.body.classList.add("paper-rails-fixed");
+  document.body.classList.toggle("paper-notes-fixed", shouldFixNotes);
 }
 
 function updateHookStory() {
-  if (!hookStory) {
+  if (!hookStory || !hookCanvas) {
     document.body.classList.remove("hook-canvas-fixed");
     return;
   }
 
   const rect = hookStory.getBoundingClientRect();
-  const travel = Math.max(1, rect.height - window.innerHeight);
-  const progress = Math.min(Math.max(-rect.top / travel, 0), 1);
+  const canvasHeight = hookCanvas.offsetHeight;
+  const storyTop = hookStory.offsetTop;
+  const scrollDistance = Math.round(Math.max(window.innerHeight * 2.1, 1650));
+  const paperHold = Math.round(Math.max(window.innerHeight * 0.7125, window.innerHeight - canvasHeight + 390, 465));
+  const stickyTop = Math.max(0, window.innerHeight - canvasHeight - 1);
+  const progress = Math.min(Math.max((window.scrollY - storyTop) / scrollDistance, 0), 1);
   const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
   const smoothstep = (start, end, value) => {
     const t = clamp01((value - start) / (end - start));
     return t * t * (3 - 2 * t);
   };
-  const helpOpacity = smoothstep(0.16, 0.38, progress);
-  const deflectOpacity = smoothstep(0.46, 0.62, progress);
-  const highlightOpacity = smoothstep(0.72, 0.78, progress);
-  const subtitleHighlightOpacity = highlightOpacity * (1 - smoothstep(0.86, 0.95, progress));
-  const phase = deflectOpacity > 0.02 ? 2 : helpOpacity > 0.02 ? 1 : 0;
-  const releaseStart = 0.86;
-  const releaseEnd = 0.99;
+  const requestProgress = smoothstep(0.10, 0.28, progress);
+  const responseProgress = smoothstep(0.58, 0.72, progress);
+  const refusalProgress = smoothstep(0.66, 0.78, progress);
+  const questionProgress = smoothstep(0.34, 0.44, progress);
+  const refuseUnderlineProgress = smoothstep(0.70, 0.84, progress);
+  const phase = refusalProgress > 0.02 ? 3 : responseProgress > 0.02 ? 2 : requestProgress > 0.02 ? 1 : 0;
+  const releaseStart = 0.98;
+  const releaseEnd = 1;
   const releaseRatio = Math.min(Math.max((progress - releaseStart) / (releaseEnd - releaseStart), 0), 1);
-  const contentOpacity = Math.max(0, 1 - releaseRatio);
-  const responseRowOpacity = Math.min(helpOpacity, contentOpacity);
-  const titleOpacity = Math.max(0, 1 - smoothstep(0.88, 0.98, progress));
-  const bgOpacity = Math.max(0, 1 - releaseRatio);
-  const shouldFix = rect.top <= 0 && progress < 0.99;
+  const contentOpacity = 1;
+  const responseRowOpacity = Math.min(responseProgress, contentOpacity);
+  const titleOpacity = 1;
+  const bgOpacity = 1;
+  const bounceWindow = smoothstep(0.40, 0.48, progress) * (1 - smoothstep(0.60, 0.68, progress));
+  const robotJump = Math.max(0, Math.sin(progress * Math.PI * 18)) * bounceWindow;
+  const demoFrame = hookStory.querySelector(".hook-demo-frame");
+  const frameWidth = demoFrame ? demoFrame.getBoundingClientRect().width : rect.width;
+  const userMoveMax = Math.min(Math.max(frameWidth * 0.12, 28), 92);
+  const userHopWindow = smoothstep(0.16, 0.24, progress) * (1 - smoothstep(0.36, 0.50, progress));
+  const userHop = Math.max(0, Math.sin(progress * Math.PI * 22)) * userHopWindow;
 
   hookStory.dataset.phase = String(phase);
   hookStory.dataset.release = releaseRatio > 0 ? "1" : "0";
-  hookStory.dataset.highlight = highlightOpacity > 0.02 ? "1" : "0";
+  hookStory.dataset.highlight = "0";
   hookStory.style.setProperty("--hook-content-opacity", contentOpacity.toFixed(3));
   hookStory.style.setProperty("--hook-title-opacity", titleOpacity.toFixed(3));
   hookStory.style.setProperty("--hook-bg-opacity", bgOpacity.toFixed(3));
   hookStory.style.setProperty("--response-row-opacity", responseRowOpacity.toFixed(3));
-  hookStory.style.setProperty("--response-space", `${Math.round(helpOpacity * 260)}px`);
-  hookStory.style.setProperty("--response-gap", `${Math.round(helpOpacity * 28)}px`);
-  hookStory.style.setProperty("--response-offset", `${Math.round((1 - helpOpacity) * 18)}px`);
-  hookStory.style.setProperty("--release-lift", `${Math.round(releaseRatio * -190)}px`);
-  hookStory.style.setProperty("--deflect-opacity", deflectOpacity.toFixed(3));
-  hookStory.style.setProperty("--deflect-offset", `${Math.round((1 - deflectOpacity) * 16)}px`);
-  hookStory.style.setProperty("--subtitle-highlight-alpha", subtitleHighlightOpacity.toFixed(3));
+  const responseSpace = Math.min(260, Math.max(150, window.innerHeight * 0.24));
+  hookStory.style.setProperty("--response-space", `${Math.round(responseProgress * responseSpace)}px`);
+  hookStory.style.setProperty("--response-gap", `${Math.round(responseProgress * 22)}px`);
+  hookStory.style.setProperty("--response-offset", `${Math.round((1 - responseProgress) * 18)}px`);
+  hookStory.style.setProperty("--release-lift", "0px");
+  hookStory.style.setProperty("--deflect-opacity", refusalProgress.toFixed(3));
+  hookStory.style.setProperty("--deflect-offset", `${Math.round((1 - refusalProgress) * 16)}px`);
+  hookStory.style.setProperty("--subtitle-highlight-alpha", "0");
+  hookStory.style.setProperty("--demo-request", Math.min(requestProgress, contentOpacity).toFixed(3));
+  hookStory.style.setProperty("--demo-response", Math.min(responseProgress, contentOpacity).toFixed(3));
+  hookStory.style.setProperty("--demo-refusal", Math.min(refusalProgress, contentOpacity).toFixed(3));
+  hookStory.style.setProperty("--demo-question", Math.min(questionProgress, contentOpacity).toFixed(3));
+  hookStory.style.setProperty("--subtitle-refuse-progress", refuseUnderlineProgress.toFixed(3));
+  hookStory.style.setProperty("--hook-subtitle-opacity", "1");
+  hookStory.style.setProperty("--hook-subtitle-max", "160px");
+  hookStory.style.setProperty("--hook-subtitle-margin", "18px");
+  hookStory.style.setProperty("--hook-subtitle-offset", "0px");
+  hookStory.style.setProperty("--hook-colon-offset", "0em");
+  hookStory.style.setProperty("--user-shift-x", `${Math.round(requestProgress * userMoveMax)}px`);
+  hookStory.style.setProperty("--user-hop-y", `${Math.round(userHop * -14)}px`);
+  hookStory.style.setProperty("--robot-jump-y", `${Math.round(robotJump * -18)}px`);
+  hookStory.style.setProperty("--demo-refusal-scale", (0.82 + refusalProgress * 0.18).toFixed(3));
   document.documentElement.style.setProperty("--hook-progress", progress.toFixed(3));
-  document.documentElement.style.setProperty("--hook-left", `${Math.round(rect.left)}px`);
-  document.documentElement.style.setProperty("--hook-width", `${Math.round(rect.width)}px`);
-  document.body.classList.toggle("hook-canvas-fixed", shouldFix);
+  hookStory.style.setProperty("--hook-canvas-height", `${Math.round(canvasHeight)}px`);
+  hookStory.style.setProperty("--hook-scroll-distance", `${scrollDistance}px`);
+  hookStory.style.setProperty("--hook-paper-hold", `${paperHold}px`);
+  hookStory.style.setProperty("--hook-sticky-top", `${Math.round(stickyTop)}px`);
+  document.body.classList.remove("hook-canvas-fixed");
 }
 
 if (localStorage.getItem("sidebar-collapsed") === "1") {
@@ -411,12 +527,13 @@ function groupedHref(id, links) {
   if (/^c(?:-|$)/.test(id)) return "#c-evaluation-prompt";
   if (/^d(?:-|$)/.test(id)) return "#d-example-exchanges-from-dataset";
   if (/^e(?:-|$)/.test(id)) return "#e-detailed-results";
+  if (id === "about-site") return "#about-site";
   return exact;
 }
 
 function updateStatus() {
-  updateHookStory();
   updatePaperRails();
+  updateHookStory();
 
   const scrollable = document.documentElement.scrollHeight - window.innerHeight;
   const ratio = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
@@ -444,6 +561,14 @@ function updateStatus() {
       current = section.id;
     }
   });
+
+  if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) {
+    current = sections[sections.length - 1]?.id || current;
+  }
+
+  if (window.location.hash.startsWith("#ref-")) {
+    current = "references";
+  }
 
   if (statusSection) {
     statusSection.textContent = current;
