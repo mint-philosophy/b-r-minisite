@@ -238,8 +238,17 @@ function renderAboutSource() {
   if (meta.retrievedAt) {
     const date = new Date(meta.retrievedAt);
     if (!Number.isNaN(date.getTime())) {
-      const formatted = date.toLocaleString(undefined, { dateStyle: "long", timeStyle: "short" });
-      updated = `<p>Last updated from that source at ${escapeHtml(formatted)}</p>`;
+      const formatted = date.toLocaleString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        timeZoneName: "short"
+      });
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const zoneSuffix = timeZone ? ` (${escapeHtml(timeZone)})` : "";
+      updated = `<p>Last updated from that source at ${escapeHtml(formatted)}${zoneSuffix}</p>`;
     }
   }
 
