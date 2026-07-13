@@ -102,14 +102,14 @@ html[data-theme="light"] body::after {
 }
 
 /* Minisite-specific light-mode fixes. */
-html[data-theme="light"] body.hook-canvas-fixed .hook-canvas {
+html[data-theme="light"] body.demo-canvas-fixed .demo-canvas {
   background: transparent;
 }
 
 html[data-theme="light"] .prompt-window,
 html[data-theme="light"] .response-card,
 html[data-theme="light"] .speech-bubble,
-html[data-theme="light"] .hook-demo-frame,
+html[data-theme="light"] .demo-player-frame,
 html[data-theme="light"] .table-scroll,
 html[data-theme="light"] .rule-card,
 html[data-theme="light"] .need-card,
@@ -150,11 +150,11 @@ html[data-theme="light"] .help-bubble {
 
 html[data-theme="light"] .deflect-bubble .bubble-label,
 html[data-theme="light"] .deflect-bubble .bubble-model,
-html[data-theme="light"] .hook-story[data-highlight="1"] .hook-highlight {
+html[data-theme="light"] .demo-story[data-highlight="1"] .demo-highlight {
   color: #9f1239;
 }
 
-html[data-theme="light"] .hook-story[data-highlight="1"] .hook-highlight {
+html[data-theme="light"] .demo-story[data-highlight="1"] .demo-highlight {
   background: rgba(187, 45, 59, 0.12);
   box-shadow: 0 0 0 2px rgba(187, 45, 59, 0.1);
 }

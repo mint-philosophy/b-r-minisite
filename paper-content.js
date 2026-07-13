@@ -2179,3 +2179,12 @@ window.PAPER_CITATION_ALIASES = [
     "key": "raz_morality_2010"
   }
 ];
+window.PAPER_META = {
+  "source": {
+    "kind": "arxiv",
+    "label": "arXiv",
+    "url": "https://arxiv.org/abs/2604.06233"
+  },
+  "retrievedAt": "2026-07-13T02:09:52Z",
+  "sourceHash": "9656aea8117c"
+};

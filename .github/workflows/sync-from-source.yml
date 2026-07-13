@@ -1,0 +1,90 @@
+name: Sync from source
+
+# Daily check of the declared source (arXiv) for updates. If the source content
+# has changed, regenerate paper-content.js and commit it. Gated by the
+# `autoSyncFromSource` flag in paper.config.json: set it to false when the arXiv
+# version is out of date / a different source of truth is wanted, and this
+# workflow becomes a no-op. See README.md ("Auto-sync from source").
+
+on:
+  schedule:
+    # 04:37 UTC daily — deliberately off the hour and off-peak for GitHub's
+    # shared scheduler (~14:37 / 15:37 in Hobart depending on DST; overnight).
+    - cron: "37 4 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+# Never let two syncs (e.g. a manual dispatch during the nightly run) race on a
+# push. Don't cancel an in-flight run mid-commit.
+concurrency:
+  group: sync-from-source
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check autoSyncFromSource flag and source kind
+        id: gate
+        run: |
+          python3 - <<'PY'
+          import json, os
+          cfg = json.load(open("paper.config.json"))
+          flag = cfg.get("autoSyncFromSource")
+          kind = (cfg.get("source") or {}).get("kind")
+          enabled = (flag is True) and (kind == "arxiv")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              fh.write(f"enabled={'true' if enabled else 'false'}\n")
+          if not enabled:
+              print(f"Auto-sync skipped: autoSyncFromSource={flag!r}, "
+                    f"source.kind={kind!r}. Exiting cleanly.")
+          else:
+              print("Auto-sync enabled (autoSyncFromSource=true, source.kind=arxiv).")
+          PY
+
+      - name: Install dependencies
+        if: steps.gate.outputs.enabled == 'true'
+        run: pip install pypdf pillow
+
+      - name: Run sync
+        if: steps.gate.outputs.enabled == 'true'
+        id: sync
+        run: |
+          set +e
+          python3 scripts/sync_from_source.py
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" -eq 0 ]; then
+            echo "Source in sync; nothing to commit."
+            exit 0
+          elif [ "$code" -eq 10 ]; then
+            echo "Source updated; paper-content.js regenerated."
+            exit 0
+          else
+            echo "sync_from_source.py failed with exit code $code"
+            exit "$code"
+          fi
+
+      - name: Commit and push if updated
+        if: steps.gate.outputs.enabled == 'true' && steps.sync.outputs.exit_code == '10'
+        run: |
+          git config user.name "minisite-sync[bot]"
+          git config user.email "minisite-sync[bot]@users.noreply.github.com"
+          NEWHASH=$(python3 -c "import re; print(re.search(r'\"sourceHash\"\s*:\s*\"([0-9a-f]+)\"', open('paper-content.js').read()).group(1))")
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No file changes to commit despite exit 10; skipping."
+          else
+            git commit -m "Auto-sync from arXiv (${NEWHASH})"
+            git push
+          fi

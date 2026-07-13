@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blind Refusal | MINT Lab</title>
   <meta name="description" content="A MINT Lab minisite prototype for Blind Refusal: Language Models Refuse to Help Users Evade Unjust, Absurd, and Illegitimate Rules.">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,8 +17,12 @@
   <script>try{if(localStorage.getItem("mint-theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
   <script src="theme.js" defer></script>
 </head>
-<body class="no-global-sidebar">
-  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open document map">menu</button>
+<body>
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <path d="M4 6h14M4 11h14M4 16h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </button>
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <nav class="sidebar" id="sidebar">
@@ -23,29 +31,34 @@
       <span class="sidebar-sub">Research Lab</span>
     </a>
     <div class="search-trigger" id="searchTrigger">
-      <span>⌕</span> Search... <kbd>Ctrl K</kbd>
+      <span>&#128269;</span> Search... <kbd>&#8984;K</kbd>
     </div>
-    <div class="nav-label">Blind Refusal</div>
-    <nav class="nav-pages" aria-label="Document map">
-      <a href="#hook" class="nav-link nav-page active"><span class="nav-mark">-&gt;</span>Hook</a>
-      <a href="#hook-responses" class="nav-link nav-section"><span class="nav-mark">00</span>Demo</a>
-      <a href="#paper" class="nav-link nav-page"><span class="nav-mark">01</span>Paper</a>
-      <a href="#abstract" class="nav-link nav-section"><span class="nav-mark">02</span>Abstract</a>
-      <a href="#1-introduction" class="nav-link nav-section"><span class="nav-mark">03</span>Intro</a>
-      <a href="#3-methods" class="nav-link nav-section"><span class="nav-mark">04</span>Methods</a>
-      <a href="#4-results" class="nav-link nav-section"><span class="nav-mark">05</span>Results</a>
-      <a href="#references" class="nav-link nav-section"><span class="nav-mark">06</span>Refs</a>
-      <a href="#appendix" class="nav-link nav-page"><span class="nav-mark">07</span>Appendix</a>
-      <a href="#a-taxonomy-details" class="nav-link nav-section"><span class="nav-mark">A</span>Taxonomy</a>
-      <a href="#b-gate-prompts" class="nav-link nav-section"><span class="nav-mark">B</span>Gate prompts</a>
-      <a href="#c-evaluation-prompt" class="nav-link nav-section"><span class="nav-mark">C</span>Evaluation</a>
-      <a href="#d-example-exchanges-from-dataset" class="nav-link nav-section"><span class="nav-mark">D</span>Examples</a>
-      <a href="#e-detailed-results" class="nav-link nav-section"><span class="nav-mark">E</span>Details</a>
-      <a href="#about-site" class="nav-link nav-section"><span class="nav-mark">08</span>About</a>
-    </nav>
+    <div class="nav-pages">
+      <a href="#top" class="nav-link nav-page active"><span class="nav-mark">❯</span>Blind Refusal</a>
+      <div class="nav-sections expanded">
+        <a href="#demo" class="nav-link nav-section"><span class="nav-mark">├──</span>Demo</a>
+        <a href="#abstract" class="nav-link nav-section"><span class="nav-mark">├──</span>Abstract</a>
+        <a href="#1-introduction" class="nav-link nav-section"><span class="nav-mark">├──</span>Introduction</a>
+        <a href="#2-related-work" class="nav-link nav-section"><span class="nav-mark">├──</span>Related Work</a>
+        <a href="#3-methods" class="nav-link nav-section"><span class="nav-mark">├──</span>Methods</a>
+        <a href="#4-results" class="nav-link nav-section"><span class="nav-mark">├──</span>Results</a>
+        <a href="#5-discussion" class="nav-link nav-section"><span class="nav-mark">├──</span>Discussion</a>
+        <a href="#6-conclusion" class="nav-link nav-section"><span class="nav-mark">├──</span>Conclusion</a>
+        <a href="#references" class="nav-link nav-section"><span class="nav-mark">└──</span>References</a>
+      </div>
+      <a href="#appendix" class="nav-link nav-page"><span class="nav-mark">▸</span>Appendix</a>
+      <div class="nav-sections">
+        <a href="#a-taxonomy-details" class="nav-link nav-section"><span class="nav-mark">├──</span>A Taxonomy details</a>
+        <a href="#b-gate-prompts" class="nav-link nav-section"><span class="nav-mark">├──</span>B Gate prompts</a>
+        <a href="#c-evaluation-prompt" class="nav-link nav-section"><span class="nav-mark">├──</span>C Evaluation prompt</a>
+        <a href="#d-example-exchanges-from-dataset" class="nav-link nav-section"><span class="nav-mark">├──</span>D Examples</a>
+        <a href="#e-detailed-results" class="nav-link nav-section"><span class="nav-mark">└──</span>E Detailed results</a>
+      </div>
+      <a href="#about-site" class="nav-link nav-page"><span class="nav-mark">▸</span>About</a>
+    </div>
   </nav>
 
-  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">&lt;</button>
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">«</button>
 
   <div class="search-overlay" id="searchOverlay">
     <div class="search-box">
@@ -71,12 +84,17 @@
   </div>
 
   <main id="top">
-    <section class="hook-story" id="hook" data-phase="0" aria-labelledby="hero-title">
-      <div class="hook-canvas">
-        <div class="hook-canvas-inner">
-          <div class="hero-kicker">PAPER TYPE / VENUE NAME</div>
+    <section class="demo-story" id="demo" data-phase="0" aria-labelledby="hero-title">
+      <div class="demo-canvas">
+        <div class="demo-canvas-inner">
+          <div class="demo-scroll-cue demo-scroll-cue--top" aria-hidden="true">
+            <span>Scroll for demo</span>
+            <span class="demo-scroll-icon">&darr;</span>
+            <span>Paper below</span>
+          </div>
+          <div class="hero-kicker">Forthcoming / Conference on Language Modelling 2026</div>
           <h1 id="hero-title">Blind Refusal<span class="title-colon" aria-hidden="true">:</span></h1>
-          <p class="hook-full-title">
+          <p class="demo-full-title">
             <span class="subtitle-underline subtitle-llm">Language Models</span>
             <span class="subtitle-underline subtitle-refuse">Refuse to Help</span>
             <span class="subtitle-underline subtitle-user">Users</span>
@@ -84,24 +102,24 @@
             <span class="subtitle-underline subtitle-rule">Unjust, Absurd, and Illegitimate Rules</span>
           </p>
 
-          <div class="hook-demo" id="hook-responses" aria-label="Blind Refusal interaction demo">
-            <div class="hook-demo-frame" aria-hidden="true">
-              <span class="hook-rule-box">
-                <span class="hook-rule-label">unjust rule</span>
+          <div class="demo-player" id="demo-responses" aria-label="Blind Refusal interaction demo">
+            <div class="demo-player-frame" aria-hidden="true">
+              <span class="demo-rule-box">
+                <span class="demo-rule-label">unjust rule</span>
               </span>
-              <img class="hook-sprite hook-sign" src="assets/hook/sign-red-v2-sprite-128.png" alt="">
-              <img class="hook-sprite hook-user" src="assets/hook/user-cool-v2-sprite-128.png" alt="">
-              <span class="hook-question-mark">?</span>
-              <span class="hook-character-label hook-user-label">user</span>
-              <img class="hook-sprite hook-robot" src="assets/hook/robot-brown-v2-sprite-128.png" alt="">
-              <span class="hook-character-label hook-llm-label">LLM</span>
-              <span class="hook-refusal-mark"></span>
+              <img class="demo-sprite demo-sign" src="assets/demo/sign-red-v2-sprite-128.png" alt="">
+              <img class="demo-sprite demo-user" src="assets/demo/user-cool-v2-sprite-128.png" alt="">
+              <span class="demo-question-mark">?</span>
+              <span class="demo-character-label demo-user-label">user</span>
+              <img class="demo-sprite demo-robot" src="assets/demo/robot-brown-v2-sprite-128.png" alt="">
+              <span class="demo-character-label demo-llm-label">LLM</span>
+              <span class="demo-refusal-mark"></span>
             </div>
           </div>
 
-          <div class="hook-scroll-cue" aria-hidden="true">
+          <div class="demo-scroll-cue" aria-hidden="true">
             <span>Scroll for demo</span>
-            <span class="hook-scroll-icon">&darr;</span>
+            <span class="demo-scroll-icon">&darr;</span>
             <span>Paper below</span>
           </div>
         </div>
@@ -120,6 +138,7 @@
         <a href="#paper" class="nav-page"><span class="nav-mark">›</span>Paper</a>
         <a href="#abstract" class="nav-section"><span class="nav-mark">├─</span>Abstract</a>
         <a href="#1-introduction" class="nav-section"><span class="nav-mark">├─</span>Introduction</a>
+        <a href="#2-related-work" class="nav-section"><span class="nav-mark">├─</span>Related Work</a>
         <a href="#3-methods" class="nav-section"><span class="nav-mark">├─</span>Methods</a>
         <a href="#4-results" class="nav-section"><span class="nav-mark">├─</span>Results</a>
         <a href="#5-discussion" class="nav-section"><span class="nav-mark">├─</span>Discussion</a>
@@ -216,6 +235,11 @@
       url={https://arxiv.org/abs/2604.06233}, 
 }</code></pre>
           </div>
+
+          <div class="about-block">
+            <h3>Source</h3>
+            <div id="aboutSource" class="about-source"></div>
+          </div>
         </section>
       </article>
 
@@ -233,13 +257,13 @@
 
   <button class="back-to-text-cue" id="backToTextCue" type="button" hidden>
     <span>Back to text</span>
-    <span class="hook-scroll-icon" aria-hidden="true">&uarr;</span>
+    <span class="demo-scroll-icon" aria-hidden="true">&uarr;</span>
   </button>
 
   <footer class="statusline" id="statusline" aria-label="Reading status">
     <div class="statusline-row statusline-row-top">
       <span class="statusline-site">mintresearch.org</span>
-      <span class="statusline-section" id="statusSectionTop">hook</span>
+      <span class="statusline-section" id="statusSectionTop">demo</span>
     </div>
     <div class="statusline-row statusline-row-bottom">
       <img src="assets/minty-teal.png" alt="" class="statusline-minty">
@@ -248,7 +272,7 @@
         <span class="statusline-pct" id="statusPct">0%</span>
       </div>
       <span class="statusline-site">blindrefusal.mintresearch.org</span>
-      <span class="statusline-section" id="statusSection">hook</span>
+      <span class="statusline-section" id="statusSection">demo</span>
       <span class="statusline-tokens" id="tokenDisplay"><span class="arrow">down</span> 0 tokens</span>
     </div>
   </footer>

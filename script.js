@@ -12,8 +12,8 @@ const paperFootnotes = document.getElementById("paperFootnotes");
 const readingLayout = document.querySelector(".reading-layout");
 const leftRail = document.querySelector(".left-rail");
 const rightRail = document.querySelector(".right-rail");
-const hookStory = document.querySelector(".hook-story");
-const hookCanvas = document.querySelector(".hook-canvas");
+const demoStory = document.querySelector(".demo-story");
+const demoCanvas = document.querySelector(".demo-canvas");
 const backToTextCue = document.getElementById("backToTextCue");
 const PAPER_RAIL_COLLAPSE_WIDTH = 1280;
 let citationReturnTarget = null;
@@ -210,8 +210,45 @@ function renderPaperSections() {
   }).join("");
 }
 
+function renderAboutSource() {
+  const aboutSource = document.getElementById("aboutSource");
+  if (!aboutSource) return;
+
+  const meta = window.PAPER_META;
+  const source = meta && meta.source;
+  if (!source) {
+    aboutSource.hidden = true;
+    return;
+  }
+
+  let lead;
+  if (source.kind === "private") {
+    const version = meta.sourceHash ? ` (version ${escapeHtml(meta.sourceHash)})` : "";
+    lead = `This article is based on a privately provided source${version}.`;
+  } else {
+    const label = escapeHtml(source.label || source.kind || "the original source");
+    const url = source.url || "";
+    const link = url
+      ? `<a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${escapeHtml(url)}</a>`
+      : "";
+    lead = `This article is based on the version hosted at ${label}, url: ${link}`;
+  }
+
+  let updated = "";
+  if (meta.retrievedAt) {
+    const date = new Date(meta.retrievedAt);
+    if (!Number.isNaN(date.getTime())) {
+      const formatted = date.toLocaleString(undefined, { dateStyle: "long", timeStyle: "short" });
+      updated = `<p>Last updated from that source at ${escapeHtml(formatted)}</p>`;
+    }
+  }
+
+  aboutSource.innerHTML = `<p>${lead}</p>${updated}`;
+}
+
 renderPaperFootnotes();
 renderPaperSections();
+renderAboutSource();
 
 document.addEventListener("click", (event) => {
   const citationLink = event.target.closest("a.citation-link");
@@ -273,8 +310,7 @@ const generatedSearchItems = Array.isArray(window.PAPER_SECTIONS)
   : [];
 
 const searchIndex = [
-  { title: "Hook", desc: "Media Sovereignty Act user prompt", href: "#hook" },
-  { title: "Demo", desc: "Scroll-driven user, rule, and robot refusal animation", href: "#hook-responses" },
+  { title: "Demo", desc: "Scroll-driven user, rule, and robot refusal animation", href: "#demo" },
   { title: "Paper", desc: "Title, authors, arXiv, PDF, GitHub", href: "#paper" },
   { title: "About", desc: "Site credit and citation", href: "#about-site" },
   ...generatedSearchItems
@@ -341,8 +377,8 @@ function updatePaperRails() {
   const top = Math.max(18, bannerHeight + 18);
   const height = Math.max(220, window.innerHeight - top - statusHeight - 18);
   const layoutRect = readingLayout.getBoundingClientRect();
-  const hookRect = hookStory?.getBoundingClientRect();
-  const shouldFixMap = hookRect ? hookRect.bottom > 0 || layoutRect.bottom > 0 : layoutRect.bottom > 0;
+  const demoRect = demoStory?.getBoundingClientRect();
+  const shouldFixMap = demoRect ? demoRect.bottom > 0 || layoutRect.bottom > 0 : layoutRect.bottom > 0;
   const shouldFixNotes = layoutRect.top <= top && layoutRect.bottom >= top + height;
 
   if (!shouldFixMap) {
@@ -356,24 +392,25 @@ function updatePaperRails() {
 
   setRailVariable("--paper-rail-top", top);
   setRailVariable("--paper-rail-height", height);
-  setRailVariable("--left-rail-left", railRects.leftRect.left);
-  setRailVariable("--left-rail-width", railRects.leftRect.width);
   setRailVariable("--right-rail-left", railRects.rightRect.left);
   setRailVariable("--right-rail-width", railRects.rightRect.width);
 
-  document.body.classList.add("paper-rails-fixed");
+  // The left rail is now a permanent fixed sidebar (nav.sidebar); it is never
+  // promoted from the reading-layout. Only the right notes rail fixes on wide
+  // screens once the paper column fully spans the viewport.
+  document.body.classList.remove("paper-rails-fixed");
   document.body.classList.toggle("paper-notes-fixed", shouldFixNotes);
 }
 
-function updateHookStory() {
-  if (!hookStory || !hookCanvas) {
-    document.body.classList.remove("hook-canvas-fixed");
+function updateDemoStory() {
+  if (!demoStory || !demoCanvas) {
+    document.body.classList.remove("demo-canvas-fixed");
     return;
   }
 
-  const rect = hookStory.getBoundingClientRect();
-  const canvasHeight = hookCanvas.offsetHeight;
-  const storyTop = hookStory.offsetTop;
+  const rect = demoStory.getBoundingClientRect();
+  const canvasHeight = demoCanvas.offsetHeight;
+  const storyTop = demoStory.offsetTop;
   const scrollDistance = Math.round(Math.max(window.innerHeight * 2.1, 1650));
   const paperHold = Math.round(Math.max(window.innerHeight * 0.7125, window.innerHeight - canvasHeight + 390, 465));
   const stickyTop = Math.max(0, window.innerHeight - canvasHeight - 1);
@@ -398,57 +435,57 @@ function updateHookStory() {
   const bgOpacity = 1;
   const bounceWindow = smoothstep(0.40, 0.48, progress) * (1 - smoothstep(0.60, 0.68, progress));
   const robotJump = Math.max(0, Math.sin(progress * Math.PI * 18)) * bounceWindow;
-  const demoFrame = hookStory.querySelector(".hook-demo-frame");
+  const demoFrame = demoStory.querySelector(".demo-player-frame");
   const frameWidth = demoFrame ? demoFrame.getBoundingClientRect().width : rect.width;
   const userMoveMax = Math.min(Math.max(frameWidth * 0.12, 28), 92);
   const userHopWindow = smoothstep(0.16, 0.24, progress) * (1 - smoothstep(0.36, 0.50, progress));
   const userHop = Math.max(0, Math.sin(progress * Math.PI * 22)) * userHopWindow;
 
-  hookStory.dataset.phase = String(phase);
-  hookStory.dataset.release = releaseRatio > 0 ? "1" : "0";
-  hookStory.dataset.highlight = "0";
-  hookStory.style.setProperty("--hook-content-opacity", contentOpacity.toFixed(3));
-  hookStory.style.setProperty("--hook-title-opacity", titleOpacity.toFixed(3));
-  hookStory.style.setProperty("--hook-bg-opacity", bgOpacity.toFixed(3));
-  hookStory.style.setProperty("--response-row-opacity", responseRowOpacity.toFixed(3));
+  demoStory.dataset.phase = String(phase);
+  demoStory.dataset.release = releaseRatio > 0 ? "1" : "0";
+  demoStory.dataset.highlight = "0";
+  demoStory.style.setProperty("--demo-content-opacity", contentOpacity.toFixed(3));
+  demoStory.style.setProperty("--demo-title-opacity", titleOpacity.toFixed(3));
+  demoStory.style.setProperty("--demo-bg-opacity", bgOpacity.toFixed(3));
+  demoStory.style.setProperty("--response-row-opacity", responseRowOpacity.toFixed(3));
   const responseSpace = Math.min(260, Math.max(150, window.innerHeight * 0.24));
-  hookStory.style.setProperty("--response-space", `${Math.round(responseProgress * responseSpace)}px`);
-  hookStory.style.setProperty("--response-gap", `${Math.round(responseProgress * 22)}px`);
-  hookStory.style.setProperty("--response-offset", `${Math.round((1 - responseProgress) * 18)}px`);
-  hookStory.style.setProperty("--release-lift", "0px");
-  hookStory.style.setProperty("--deflect-opacity", refusalProgress.toFixed(3));
-  hookStory.style.setProperty("--deflect-offset", `${Math.round((1 - refusalProgress) * 16)}px`);
-  hookStory.style.setProperty("--subtitle-highlight-alpha", "0");
-  hookStory.style.setProperty("--demo-request", Math.min(requestProgress, contentOpacity).toFixed(3));
-  hookStory.style.setProperty("--demo-response", Math.min(responseProgress, contentOpacity).toFixed(3));
-  hookStory.style.setProperty("--demo-refusal", Math.min(refusalProgress, contentOpacity).toFixed(3));
-  hookStory.style.setProperty("--demo-question", Math.min(questionProgress, contentOpacity).toFixed(3));
-  hookStory.style.setProperty("--subtitle-refuse-progress", refuseUnderlineProgress.toFixed(3));
-  hookStory.style.setProperty("--hook-subtitle-opacity", "1");
-  hookStory.style.setProperty("--hook-subtitle-max", "160px");
-  hookStory.style.setProperty("--hook-subtitle-margin", "18px");
-  hookStory.style.setProperty("--hook-subtitle-offset", "0px");
-  hookStory.style.setProperty("--hook-colon-offset", "0em");
-  hookStory.style.setProperty("--user-shift-x", `${Math.round(requestProgress * userMoveMax)}px`);
-  hookStory.style.setProperty("--user-hop-y", `${Math.round(userHop * -14)}px`);
-  hookStory.style.setProperty("--robot-jump-y", `${Math.round(robotJump * -18)}px`);
-  hookStory.style.setProperty("--demo-refusal-scale", (0.82 + refusalProgress * 0.18).toFixed(3));
-  document.documentElement.style.setProperty("--hook-progress", progress.toFixed(3));
-  hookStory.style.setProperty("--hook-canvas-height", `${Math.round(canvasHeight)}px`);
-  hookStory.style.setProperty("--hook-scroll-distance", `${scrollDistance}px`);
-  hookStory.style.setProperty("--hook-paper-hold", `${paperHold}px`);
-  hookStory.style.setProperty("--hook-sticky-top", `${Math.round(stickyTop)}px`);
-  document.body.classList.remove("hook-canvas-fixed");
+  demoStory.style.setProperty("--response-space", `${Math.round(responseProgress * responseSpace)}px`);
+  demoStory.style.setProperty("--response-gap", `${Math.round(responseProgress * 22)}px`);
+  demoStory.style.setProperty("--response-offset", `${Math.round((1 - responseProgress) * 18)}px`);
+  demoStory.style.setProperty("--release-lift", "0px");
+  demoStory.style.setProperty("--deflect-opacity", refusalProgress.toFixed(3));
+  demoStory.style.setProperty("--deflect-offset", `${Math.round((1 - refusalProgress) * 16)}px`);
+  demoStory.style.setProperty("--subtitle-highlight-alpha", "0");
+  demoStory.style.setProperty("--demo-request", Math.min(requestProgress, contentOpacity).toFixed(3));
+  demoStory.style.setProperty("--demo-response", Math.min(responseProgress, contentOpacity).toFixed(3));
+  demoStory.style.setProperty("--demo-refusal", Math.min(refusalProgress, contentOpacity).toFixed(3));
+  demoStory.style.setProperty("--demo-question", Math.min(questionProgress, contentOpacity).toFixed(3));
+  demoStory.style.setProperty("--subtitle-refuse-progress", refuseUnderlineProgress.toFixed(3));
+  demoStory.style.setProperty("--demo-subtitle-opacity", "1");
+  demoStory.style.setProperty("--demo-subtitle-max", "160px");
+  demoStory.style.setProperty("--demo-subtitle-margin", "18px");
+  demoStory.style.setProperty("--demo-subtitle-offset", "0px");
+  demoStory.style.setProperty("--demo-colon-offset", "0em");
+  demoStory.style.setProperty("--user-shift-x", `${Math.round(requestProgress * userMoveMax)}px`);
+  demoStory.style.setProperty("--user-hop-y", `${Math.round(userHop * -14)}px`);
+  demoStory.style.setProperty("--robot-jump-y", `${Math.round(robotJump * -18)}px`);
+  demoStory.style.setProperty("--demo-refusal-scale", (0.82 + refusalProgress * 0.18).toFixed(3));
+  document.documentElement.style.setProperty("--demo-progress", progress.toFixed(3));
+  demoStory.style.setProperty("--demo-canvas-height", `${Math.round(canvasHeight)}px`);
+  demoStory.style.setProperty("--demo-scroll-distance", `${scrollDistance}px`);
+  demoStory.style.setProperty("--demo-paper-hold", `${paperHold}px`);
+  demoStory.style.setProperty("--demo-sticky-top", `${Math.round(stickyTop)}px`);
+  document.body.classList.remove("demo-canvas-fixed");
 }
 
 if (localStorage.getItem("sidebar-collapsed") === "1") {
   document.body.classList.add("sidebar-collapsed");
-  if (sidebarToggle) sidebarToggle.textContent = ">";
+  if (sidebarToggle) sidebarToggle.textContent = "»";
 }
 
 sidebarToggle?.addEventListener("click", () => {
   const collapsed = document.body.classList.toggle("sidebar-collapsed");
-  sidebarToggle.textContent = collapsed ? ">" : "<";
+  sidebarToggle.textContent = collapsed ? "»" : "«";
   localStorage.setItem("sidebar-collapsed", collapsed ? "1" : "0");
   setTimeout(syncBannerHeight, 350);
 });
@@ -509,6 +546,7 @@ const statusBar = document.getElementById("statusBar");
 const statusPct = document.getElementById("statusPct");
 const tokenDisplay = document.getElementById("tokenDisplay");
 const navLinks = Array.from(document.querySelectorAll(".nav-link"));
+const navPages = Array.from(document.querySelectorAll(".nav-pages a.nav-page"));
 const railLinks = Array.from(document.querySelectorAll(".left-rail a"));
 const sections = Array.from(document.querySelectorAll("section[id]"));
 const barLength = 16;
@@ -533,7 +571,7 @@ function groupedHref(id, links) {
 
 function updateStatus() {
   updatePaperRails();
-  updateHookStory();
+  updateDemoStory();
 
   const scrollable = document.documentElement.scrollHeight - window.innerHeight;
   const ratio = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
@@ -587,6 +625,29 @@ function updateStatus() {
       "active-parent",
       link.getAttribute("href") === "#appendix" && /^(appendix|[abcde](?:-|$))/.test(current)
     );
+  });
+
+  // Page-group accordion (Repo A behaviour): mark the active nav-page group,
+  // set its glyph to ❯ (inactive ▸), expand its sibling .nav-sections and
+  // collapse the others.
+  let activePageHref;
+  if (current === "about-site") {
+    activePageHref = "#about-site";
+  } else if (/^(appendix|[abcde](?:-|$))/.test(current)) {
+    activePageHref = "#appendix";
+  } else {
+    activePageHref = "#top";
+  }
+
+  navPages.forEach((page) => {
+    const isActivePage = page.getAttribute("href") === activePageHref;
+    page.classList.toggle("active", isActivePage);
+    const mark = page.querySelector(".nav-mark");
+    if (mark) mark.textContent = isActivePage ? "❯" : "▸";
+    const group = page.nextElementSibling;
+    if (group && group.classList.contains("nav-sections")) {
+      group.classList.toggle("expanded", isActivePage);
+    }
   });
 
   railLinks.forEach((link) => {
