@@ -555,7 +555,7 @@ const statusBar = document.getElementById("statusBar");
 const statusPct = document.getElementById("statusPct");
 const tokenDisplay = document.getElementById("tokenDisplay");
 const navLinks = Array.from(document.querySelectorAll(".nav-link"));
-const navPages = Array.from(document.querySelectorAll(".nav-pages a.nav-page"));
+const navPages = Array.from(document.querySelectorAll('.nav-pages a.nav-page[href^="#"]'));
 const railLinks = Array.from(document.querySelectorAll(".left-rail a"));
 const sections = Array.from(document.querySelectorAll("section[id]"));
 const barLength = 16;

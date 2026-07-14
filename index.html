@@ -13,9 +13,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://mintresearch.org/assets/theme.css">
   <link rel="stylesheet" href="theme.css">
   <script>try{if(localStorage.getItem("mint-theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
-  <script src="theme.js" defer></script>
+  <script src="https://mintresearch.org/assets/theme.js" defer></script>
 </head>
 <body>
   <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
@@ -26,7 +27,7 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
   <nav class="sidebar" id="sidebar">
-    <a class="sidebar-header" href="#top" aria-label="Back to top">
+    <a class="sidebar-header" href="https://mintresearch.org/" aria-label="MINT Lab home">
       <span class="sidebar-title">MINT</span>
       <span class="sidebar-sub">Research Lab</span>
     </a>
@@ -34,6 +35,7 @@
       <span>&#128269;</span> Search... <kbd>&#8984;K</kbd>
     </div>
     <div class="nav-pages">
+      <a href="https://mintresearch.org/" class="nav-link nav-page"><span class="nav-mark" aria-hidden="true">←</span>Home</a>
       <a href="#top" class="nav-link nav-page active"><span class="nav-mark">❯</span>Blind Refusal</a>
       <div class="nav-sections expanded">
         <a href="#demo" class="nav-link nav-section"><span class="nav-mark">├──</span>Demo</a>
@@ -70,7 +72,7 @@
 
   <div class="top-banner">
     <div class="top-banner-inner">
-      <a href="https://mintresearch.org/" style="display:inline-flex;"><img src="assets/mint-banner.png" alt="MINT LAB" class="top-banner-logo"></a>
+      <a href="https://mintresearch.org/" aria-label="MINT Lab home" style="display:inline-flex;"><img src="assets/mint-banner.png" alt="MINT LAB" class="top-banner-logo"></a>
       <div class="top-banner-minties" aria-hidden="true">
         <img src="assets/minty-red.png" alt="" class="top-banner-minty" style="animation-delay: 0s;">
         <img src="assets/minty-brown.png" alt="" class="top-banner-minty" style="animation-delay: 0.3s;">

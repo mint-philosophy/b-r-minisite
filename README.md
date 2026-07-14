@@ -112,6 +112,13 @@ Everything the reader sees is driven by generated data, not hand-written HTML:
   reads the generated globals and renders the page, including the **Source** block
   in the About section (built from `PAPER_META`, with a local-timezone
   "last updated" date).
+- **Shared MINT shell** — `index.html` loads
+  `https://mintresearch.org/assets/theme.css` and
+  `https://mintresearch.org/assets/theme.js` so design tokens, theme controls,
+  and masthead sizing follow the main site. The local
+  `theme.css` contains only Blind Refusal-specific light-mode fixes. The
+  sidebar header, Home entry, and banner logo link to
+  `https://mintresearch.org/`.
 
 Build order: edit `paper.config.json` and/or `paper-assets/` → run
 `extract_paper.py` → open `index.html`.
@@ -129,6 +136,21 @@ python3 -m http.server 8000
 
 (Opening `index.html` via `file://` mostly works, but a local HTTP server avoids
 browser restrictions on loading the generated `paper-content.js`.)
+
+### Shared shell QA
+
+After changing the shared theme or minisite shell, compare this site with
+`mintresearch.org` at the same viewport sizes:
+
+| Viewport | Expected masthead |
+|:---|:---|
+| `1440x900` | `100px` banner; `75px` logo; `60px` Minties |
+| `390x844` | `109px` banner; `36px` logo; `24px` Minties |
+| `844x390` | `58px` banner; row layout; `24px` logo; `16.5px` Minties; no wrapping |
+
+At each size, confirm zero horizontal overflow and that the main content begins
+at the measured banner bottom. On mobile, open the drawer and follow the Home
+link. Toggle light and dark mode once and check the browser console for errors.
 
 ---
 
