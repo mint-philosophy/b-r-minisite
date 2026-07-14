@@ -113,20 +113,6 @@ Everything the reader sees is driven by generated data, not hand-written HTML:
   in the About section (built from `PAPER_META`, with a local-timezone
   "last updated" date).
 
-### Shared MINT styling
-
-The shell loads the canonical MINT theme and theme-toggle script directly from
-`https://mintresearch.org/assets/theme.css` and
-`https://mintresearch.org/assets/theme.js`. Shared favicons, the MINT banner,
-and the Minty images also use absolute `mintresearch.org` URLs. This is
-intentional: changes to the main site's stable theme file and shared artwork
-flow through to this microsite without copied-file updates.
-
-`minisite-theme.css` contains only Blind Refusal-specific light-mode fixes.
-Do not restore local copies of `theme.css`, `theme.js`, or the shared banner
-assets. The full banner scrolls with the page; `script.js` reveals the compact
-Minties motif only after that banner has left the viewport.
-
 Build order: edit `paper.config.json` and/or `paper-assets/` → run
 `extract_paper.py` → open `index.html`.
 

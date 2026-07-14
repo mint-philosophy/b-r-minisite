@@ -3,7 +3,6 @@ const sidebar = document.getElementById("sidebar");
 const mobileOverlay = document.getElementById("mobileOverlay");
 const sidebarToggle = document.getElementById("sidebarToggle");
 const banner = document.querySelector(".top-banner");
-const compactBanner = document.getElementById("compactBanner");
 const searchTrigger = document.getElementById("searchTrigger");
 const searchOverlay = document.getElementById("searchOverlay");
 const searchInput = document.getElementById("searchInput");
@@ -341,27 +340,16 @@ sidebar?.querySelectorAll("a").forEach((link) => {
   link.addEventListener("click", closeMobileMenu);
 });
 
-function setCompactBanner(visible) {
-  document.body.classList.toggle("compact-banner-visible", visible);
-  compactBanner?.setAttribute("aria-hidden", visible ? "false" : "true");
-}
-
-if (banner && compactBanner) {
-  if ("IntersectionObserver" in window) {
-    const bannerObserver = new IntersectionObserver(([entry]) => {
-      setCompactBanner(!entry.isIntersecting);
-    });
-    bannerObserver.observe(banner);
-  } else {
-    const updateCompactBanner = () => {
-      setCompactBanner(banner.getBoundingClientRect().bottom <= 0);
-    };
-    updateCompactBanner();
-    window.addEventListener("scroll", updateCompactBanner, { passive: true });
+function syncBannerHeight() {
+  if (banner) {
+    document.documentElement.style.setProperty("--banner-h", `${banner.offsetHeight}px`);
   }
 }
 
+syncBannerHeight();
+window.addEventListener("resize", syncBannerHeight);
 window.addEventListener("load", () => {
+  syncBannerHeight();
   updatePaperRails();
   setTimeout(scrollToCurrentHash, 50);
 });
