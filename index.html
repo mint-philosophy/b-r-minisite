@@ -5,20 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blind Refusal | MINT Lab</title>
   <meta name="description" content="A MINT Lab minisite prototype for Blind Refusal: Language Models Refuse to Help Users Evade Unjust, Absurd, and Illegitimate Rules.">
-  <link rel="icon" type="image/x-icon" href="https://mintresearch.org/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="https://mintresearch.org/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="https://mintresearch.org/favicon-192x192.png">
-  <link rel="apple-touch-icon" href="https://mintresearch.org/apple-touch-icon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://mintresearch.org/assets/theme.css">
-  <link rel="stylesheet" href="minisite-theme.css">
+  <link rel="stylesheet" href="theme.css">
   <script>try{if(localStorage.getItem("mint-theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
-  <script src="https://mintresearch.org/assets/theme.js" defer></script>
+  <script src="theme.js" defer></script>
 </head>
-<body class="mint-microsite-shell">
+<body>
   <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
       <path d="M4 6h14M4 11h14M4 16h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
@@ -71,31 +70,18 @@
 
   <div class="top-banner">
     <div class="top-banner-inner">
-      <a href="https://mintresearch.org/" style="display:inline-flex;"><img src="https://mintresearch.org/assets/mint-banner.png" alt="MINT LAB" class="top-banner-logo"></a>
+      <a href="https://mintresearch.org/" style="display:inline-flex;"><img src="assets/mint-banner.png" alt="MINT LAB" class="top-banner-logo"></a>
       <div class="top-banner-minties" aria-hidden="true">
-        <img src="https://mintresearch.org/assets/minty-red.png" alt="" class="top-banner-minty" style="animation-delay: 0s;">
-        <img src="https://mintresearch.org/assets/minty-brown.png" alt="" class="top-banner-minty" style="animation-delay: 0.3s;">
-        <img src="https://mintresearch.org/assets/minty-yellow.png" alt="" class="top-banner-minty" style="animation-delay: 0.6s;">
-        <img src="https://mintresearch.org/assets/minty-green.png" alt="" class="top-banner-minty" style="animation-delay: 0.9s;">
-        <img src="https://mintresearch.org/assets/minty-teal.png" alt="" class="top-banner-minty" style="animation-delay: 1.2s;">
-        <img src="https://mintresearch.org/assets/minty-indigo.png" alt="" class="top-banner-minty" style="animation-delay: 1.5s;">
-        <img src="https://mintresearch.org/assets/minty-purple.png" alt="" class="top-banner-minty" style="animation-delay: 1.8s;">
-        <img src="https://mintresearch.org/assets/minty-cool.png" alt="" class="top-banner-minty" style="animation-delay: 2.1s;">
+        <img src="assets/minty-red.png" alt="" class="top-banner-minty" style="animation-delay: 0s;">
+        <img src="assets/minty-brown.png" alt="" class="top-banner-minty" style="animation-delay: 0.3s;">
+        <img src="assets/minty-yellow.png" alt="" class="top-banner-minty" style="animation-delay: 0.6s;">
+        <img src="assets/minty-green.png" alt="" class="top-banner-minty" style="animation-delay: 0.9s;">
+        <img src="assets/minty-teal.png" alt="" class="top-banner-minty" style="animation-delay: 1.2s;">
+        <img src="assets/minty-indigo.png" alt="" class="top-banner-minty" style="animation-delay: 1.5s;">
+        <img src="assets/minty-purple.png" alt="" class="top-banner-minty" style="animation-delay: 1.8s;">
+        <img src="assets/minty-cool.png" alt="" class="top-banner-minty" style="animation-delay: 2.1s;">
       </div>
     </div>
-  </div>
-
-  <div class="mint-compact-banner" id="compactBanner" aria-hidden="true">
-    <a href="https://mintresearch.org/" aria-label="MINT Lab home">
-      <img src="https://mintresearch.org/assets/minty-red.png" alt="">
-      <img src="https://mintresearch.org/assets/minty-brown.png" alt="">
-      <img src="https://mintresearch.org/assets/minty-yellow.png" alt="">
-      <img src="https://mintresearch.org/assets/minty-green.png" alt="">
-      <img src="https://mintresearch.org/assets/minty-teal.png" alt="">
-      <img src="https://mintresearch.org/assets/minty-indigo.png" alt="">
-      <img src="https://mintresearch.org/assets/minty-purple.png" alt="">
-      <img src="https://mintresearch.org/assets/minty-cool.png" alt="">
-    </a>
   </div>
 
   <main id="top">
@@ -282,7 +268,7 @@
       <span class="statusline-section" id="statusSectionTop">demo</span>
     </div>
     <div class="statusline-row statusline-row-bottom">
-      <img src="https://mintresearch.org/assets/minty-teal.png" alt="" class="statusline-minty">
+      <img src="assets/minty-teal.png" alt="" class="statusline-minty">
       <div class="statusline-progress">
         <span class="statusline-bar" id="statusBar"></span>
         <span class="statusline-pct" id="statusPct">0%</span>
