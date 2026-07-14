@@ -294,11 +294,12 @@ function scrollToCurrentHash() {
     const applyHashActive = () => {
       updateStatus();
       const activeHref = target.id.startsWith("ref-") ? "#references" : `#${target.id}`;
-      document.querySelectorAll(".nav-link, .left-rail a").forEach((link) => {
+      document.querySelectorAll("[data-page-anchor], .left-rail a").forEach((link) => {
         const active = link.getAttribute("href") === activeHref;
         link.classList.toggle("active", active);
         if (active) link.classList.remove("active-parent");
       });
+      document.querySelector("[data-microsite-current]")?.classList.add("active-parent");
     };
     setTimeout(applyHashActive, 0);
     setTimeout(applyHashActive, 120);
@@ -554,8 +555,9 @@ const statusSectionTop = document.getElementById("statusSectionTop");
 const statusBar = document.getElementById("statusBar");
 const statusPct = document.getElementById("statusPct");
 const tokenDisplay = document.getElementById("tokenDisplay");
-const navLinks = Array.from(document.querySelectorAll(".nav-link"));
-const navPages = Array.from(document.querySelectorAll(".nav-pages a.nav-page"));
+const pageAnchorLinks = Array.from(document.querySelectorAll("[data-page-anchor]"));
+const blindRefusalLeaf = document.querySelector("[data-microsite-current]");
+const appendixAnchor = pageAnchorLinks.find((link) => link.getAttribute("href") === "#appendix");
 const railLinks = Array.from(document.querySelectorAll(".left-rail a"));
 const sections = Array.from(document.querySelectorAll("section[id]"));
 const barLength = 16;
@@ -603,8 +605,13 @@ function updateStatus() {
   }
 
   let current = sections[0]?.id || "top";
+  const sectionScrollMargin = sections.reduce((largest, section) => {
+    return Math.max(largest, parseFloat(getComputedStyle(section).scrollMarginTop) || 0);
+  }, 0);
+  const documentScrollPadding = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+  const activationLine = Math.max(180, sectionScrollMargin + documentScrollPadding + 2);
   sections.forEach((section) => {
-    if (section.getBoundingClientRect().top <= 180) {
+    if (section.getBoundingClientRect().top <= activationLine) {
       current = section.id;
     }
   });
@@ -625,39 +632,18 @@ function updateStatus() {
     statusSectionTop.textContent = current;
   }
 
-  const navHref = groupedHref(current, navLinks);
+  const navHref = groupedHref(current, pageAnchorLinks);
   const railHref = groupedHref(current, railLinks);
 
-  navLinks.forEach((link) => {
+  pageAnchorLinks.forEach((link) => {
     link.classList.toggle("active", link.getAttribute("href") === navHref);
-    link.classList.toggle(
-      "active-parent",
-      link.getAttribute("href") === "#appendix" && /^(appendix|[abcde](?:-|$))/.test(current)
-    );
+    if (link !== appendixAnchor) link.classList.remove("active-parent");
   });
-
-  // Page-group accordion (Repo A behaviour): mark the active nav-page group,
-  // set its glyph to ❯ (inactive ▸), expand its sibling .nav-sections and
-  // collapse the others.
-  let activePageHref;
-  if (current === "about-site") {
-    activePageHref = "#about-site";
-  } else if (/^(appendix|[abcde](?:-|$))/.test(current)) {
-    activePageHref = "#appendix";
-  } else {
-    activePageHref = "#top";
-  }
-
-  navPages.forEach((page) => {
-    const isActivePage = page.getAttribute("href") === activePageHref;
-    page.classList.toggle("active", isActivePage);
-    const mark = page.querySelector(".nav-mark");
-    if (mark) mark.textContent = isActivePage ? "❯" : "▸";
-    const group = page.nextElementSibling;
-    if (group && group.classList.contains("nav-sections")) {
-      group.classList.toggle("expanded", isActivePage);
-    }
-  });
+  blindRefusalLeaf?.classList.add("active-parent");
+  appendixAnchor?.classList.toggle(
+    "active-parent",
+    /^(appendix|[abcde](?:-|$))/.test(current)
+  );
 
   railLinks.forEach((link) => {
     link.classList.toggle("active", link.getAttribute("href") === railHref);

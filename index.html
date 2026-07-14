@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="theme.css">
   <script>try{if(localStorage.getItem("mint-theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
@@ -25,8 +25,8 @@
   </button>
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
-  <nav class="sidebar" id="sidebar">
-    <a class="sidebar-header" href="#top" aria-label="Back to top">
+  <nav class="sidebar" id="sidebar" aria-label="MINT Lab navigation">
+    <a class="sidebar-header" href="https://mintresearch.org/" aria-label="MINT Lab home">
       <span class="sidebar-title">MINT</span>
       <span class="sidebar-sub">Research Lab</span>
     </a>
@@ -34,28 +34,40 @@
       <span>&#128269;</span> Search... <kbd>&#8984;K</kbd>
     </div>
     <div class="nav-pages">
-      <a href="#top" class="nav-link nav-page active"><span class="nav-mark">❯</span>Blind Refusal</a>
-      <div class="nav-sections expanded">
-        <a href="#demo" class="nav-link nav-section"><span class="nav-mark">├──</span>Demo</a>
-        <a href="#paper" class="nav-link nav-section"><span class="nav-mark">├──</span>Paper</a>
-        <a href="#abstract" class="nav-link nav-section"><span class="nav-mark">├──</span>Abstract</a>
-        <a href="#1-introduction" class="nav-link nav-section"><span class="nav-mark">├──</span>Introduction</a>
-        <a href="#2-related-work" class="nav-link nav-section"><span class="nav-mark">├──</span>Related Work</a>
-        <a href="#3-methods" class="nav-link nav-section"><span class="nav-mark">├──</span>Methods</a>
-        <a href="#4-results" class="nav-link nav-section"><span class="nav-mark">├──</span>Results</a>
-        <a href="#5-discussion" class="nav-link nav-section"><span class="nav-mark">├──</span>Discussion</a>
-        <a href="#6-conclusion" class="nav-link nav-section"><span class="nav-mark">├──</span>Conclusion</a>
-        <a href="#references" class="nav-link nav-section"><span class="nav-mark">└──</span>References</a>
+      <a href="https://mintresearch.org/" class="nav-link nav-page"><span class="nav-mark">◆</span>About MINT Lab</a>
+      <a href="https://mintresearch.org/cv/" class="nav-link nav-page"><span class="nav-mark">◆</span>Seth Lazar CV</a>
+      <a href="https://mintresearch.org/guide/" class="nav-link nav-page"><span class="nav-mark">▸</span>Lab Infrastructure</a>
+      <a href="https://mintresearch.org/newsletter/" class="nav-link nav-page"><span class="nav-mark">◈</span>Newsletters</a>
+
+      <div class="nav-group"><span class="nav-mark">◇</span>Microsites</div>
+      <div class="nav-sections expanded microsites-nav">
+        <a href="#top" class="nav-link nav-section microsite-leaf active-parent" aria-current="page" data-microsite-current><span class="nav-mark">❯</span>Blind Refusal</a>
+        <div class="nav-sections expanded microsite-page-nav" aria-label="Blind Refusal sections">
+          <a href="#demo" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>Demo</a>
+          <a href="#paper" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>Paper</a>
+          <a href="#abstract" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>Abstract</a>
+          <a href="#1-introduction" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>Introduction</a>
+          <a href="#2-related-work" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>Related Work</a>
+          <a href="#3-methods" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>Methods</a>
+          <a href="#4-results" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>Results</a>
+          <a href="#5-discussion" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>Discussion</a>
+          <a href="#6-conclusion" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>Conclusion</a>
+          <a href="#references" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>References</a>
+          <a href="#appendix" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">├──</span>Appendix</a>
+          <a href="#a-taxonomy-details" class="nav-link nav-section sub-link appendix-sub-link" data-page-anchor><span class="nav-mark">├──</span>A Taxonomy details</a>
+          <a href="#b-gate-prompts" class="nav-link nav-section sub-link appendix-sub-link" data-page-anchor><span class="nav-mark">├──</span>B Gate prompts</a>
+          <a href="#c-evaluation-prompt" class="nav-link nav-section sub-link appendix-sub-link" data-page-anchor><span class="nav-mark">├──</span>C Evaluation prompt</a>
+          <a href="#d-example-exchanges-from-dataset" class="nav-link nav-section sub-link appendix-sub-link" data-page-anchor><span class="nav-mark">├──</span>D Examples</a>
+          <a href="#e-detailed-results" class="nav-link nav-section sub-link appendix-sub-link" data-page-anchor><span class="nav-mark">├──</span>E Detailed results</a>
+          <a href="#about-site" class="nav-link nav-section sub-link" data-page-anchor><span class="nav-mark">└──</span>About</a>
+        </div>
+        <a href="https://mintresearch.org/lab-overview/" class="nav-link nav-section microsite-peer"><span class="nav-mark">├──</span>Can Machines Reason Morally?</a>
+        <a href="https://mintresearch.org/nc/" class="nav-link nav-section microsite-peer"><span class="nav-mark">├──</span>Evaluating LLM Normative Competence</a>
+        <a href="https://mintresearch.org/FDC" class="nav-link nav-section microsite-peer"><span class="nav-mark">└──</span>The AGI-Ready Policy Student</a>
       </div>
-      <a href="#appendix" class="nav-link nav-page"><span class="nav-mark">▸</span>Appendix</a>
-      <div class="nav-sections">
-        <a href="#a-taxonomy-details" class="nav-link nav-section"><span class="nav-mark">├──</span>A Taxonomy details</a>
-        <a href="#b-gate-prompts" class="nav-link nav-section"><span class="nav-mark">├──</span>B Gate prompts</a>
-        <a href="#c-evaluation-prompt" class="nav-link nav-section"><span class="nav-mark">├──</span>C Evaluation prompt</a>
-        <a href="#d-example-exchanges-from-dataset" class="nav-link nav-section"><span class="nav-mark">├──</span>D Examples</a>
-        <a href="#e-detailed-results" class="nav-link nav-section"><span class="nav-mark">└──</span>E Detailed results</a>
-      </div>
-      <a href="#about-site" class="nav-link nav-page"><span class="nav-mark">▸</span>About</a>
+
+      <a href="https://mintresearch.org/corpus-map/" class="nav-link nav-page"><span class="nav-mark">◎</span>Corpus Map</a>
+      <a href="https://mintresearch.org/data-dash/" class="nav-link nav-page"><span class="nav-mark">▶</span>Data Dash</a>
     </div>
   </nav>
 

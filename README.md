@@ -113,6 +113,20 @@ Everything the reader sees is driven by generated data, not hand-written HTML:
   in the About section (built from `PAPER_META`, with a local-timezone
   "last updated" date).
 
+### Sidebar navigation
+
+The primary sidebar follows the information hierarchy on `mintresearch.org` while
+remaining self-contained in this repository. The **Microsites** group stays open,
+**Blind Refusal** is its active leaf, and the leaf expands into the anchors for
+this page. Appendix sections and About are page anchors rather than separate
+top-level pages. Keep the peer-microsite labels and URLs synchronized with
+`mintresearch.org/src/data/navigation.ts`; do not couple this site to the main
+site's runtime styles or scripts.
+
+Typography follows the same division of labour as the other microsites:
+JetBrains Mono is reserved for navigation, headings, labels, legends, metadata,
+and data tables; Newsreader is used for sustained paper prose and references.
+
 Build order: edit `paper.config.json` and/or `paper-assets/` → run
 `extract_paper.py` → open `index.html`.
 
