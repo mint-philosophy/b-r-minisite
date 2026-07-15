@@ -115,17 +115,48 @@ Everything the reader sees is driven by generated data, not hand-written HTML:
 
 ### Sidebar navigation
 
-The primary sidebar follows the information hierarchy on `mintresearch.org` while
-remaining self-contained in this repository. The **Microsites** group stays open,
+The primary sidebar follows the information hierarchy on `mintresearch.org`. The
+paper theme, typography, navigation, and interaction code remain self-contained
+in this repository. The **Microsites** group stays open,
 **Blind Refusal** is its active leaf, and the leaf expands into the anchors for
 this page. Appendix sections and About are page anchors rather than separate
 top-level pages. Keep the peer-microsite labels and URLs synchronized with
-`mintresearch.org/src/data/navigation.ts`; do not couple this site to the main
-site's runtime styles or scripts.
+`mintresearch.org/src/data/navigation.ts`.
+
+The masthead is the deliberate exception to the self-contained runtime boundary:
+`index.html` loads `https://mintresearch.org/assets/mint-banner.css` and
+`mint-banner.js`, and uses the canonical banner images from the same asset root.
+Those banner-only files own its markup, dimensions, responsive behavior, image
+list, and measured `--banner-h`. Do not import the full main-site `theme.css` or
+`theme.js`, and do not reintroduce local banner dimensions in `styles.css`.
 
 Typography follows the same division of labour as the other microsites:
 JetBrains Mono is reserved for navigation, headings, labels, legends, metadata,
 and data tables; Newsreader is used for sustained paper prose and references.
+
+### Deployment guard
+
+GitHub Pages deploys through `.github/workflows/deploy.yml`, not the legacy
+publish-every-push path. Every deployment first runs the banner contract check.
+It requires the main-site-owned banner stylesheet, component, and images; keeps
+the local Blind Refusal theme; forbids the full main-site theme; and rejects
+local banner dimensions. A commit that restores the oversized banner can remain
+in Git history, but it cannot replace the public site.
+
+The repository Pages Source must remain **GitHub Actions** (`build_type=workflow`),
+not branch publishing; otherwise pushes can bypass this gate.
+
+Run the contract check before any manual deployment or shell/theme edit:
+
+```bash
+node scripts/check_banner_contract.mjs
+```
+
+The arXiv auto-sync runs the same contract check and may stage only
+`paper-content.js`, `paper.config.json`, and generated paper figures. It refuses
+unexpected shell or theme changes instead of sweeping them into an automated
+commit, then explicitly dispatches the Pages workflow because GitHub does not
+start push-triggered workflows for commits made with the workflow token.
 
 Build order: edit `paper.config.json` and/or `paper-assets/` → run
 `extract_paper.py` → open `index.html`.

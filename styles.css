@@ -2558,22 +2558,17 @@ nav.sidebar a.sidebar-header:hover {
   z-index: 90;
   display: flex;
   align-items: center;
-  padding: 16px 0;
   transition: left 0.3s ease;
 }
 
 .top-banner-inner {
   width: 100%;
-  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
 }
 
 .top-banner-logo {
-  height: min(100px, 12vh);
   width: auto;
   image-rendering: auto;
   flex-shrink: 0;
@@ -2582,14 +2577,10 @@ nav.sidebar a.sidebar-header:hover {
 .top-banner-minties {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
   justify-content: center;
 }
 
 .top-banner-minty {
-  width: min(80px, 10vh);
-  height: min(80px, 10vh);
   object-fit: contain;
   image-rendering: pixelated;
   opacity: 0;
@@ -2817,29 +2808,6 @@ main {
 
   .top-banner {
     left: 0;
-    height: auto;
-    min-height: 80px;
-  }
-
-  .top-banner-inner {
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px 16px;
-  }
-
-  .top-banner-logo {
-    height: 48px;
-  }
-
-  .top-banner-minties {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .top-banner-minty {
-    width: 32px;
-    height: 32px;
   }
 
   main,

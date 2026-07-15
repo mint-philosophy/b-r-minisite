@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 # Never let two syncs (e.g. a manual dispatch during the nightly run) race on a
 # push. Don't cancel an in-flight run mid-commit.
@@ -33,6 +34,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Enforce site contract
+        run: node scripts/check_banner_contract.mjs
 
       - name: Check autoSyncFromSource flag and source kind
         id: gate
@@ -81,10 +85,38 @@ jobs:
           git config user.name "minisite-sync[bot]"
           git config user.email "minisite-sync[bot]@users.noreply.github.com"
           NEWHASH=$(python3 -c "import re; print(re.search(r'\"sourceHash\"\s*:\s*\"([0-9a-f]+)\"', open('paper-content.js').read()).group(1))")
-          git add -A
+          python3 - <<'PY'
+          import subprocess
+          import sys
+
+          allowed_files = {"paper-content.js", "paper.config.json"}
+          allowed_prefix = "assets/paper-figures/"
+          changed = set(subprocess.check_output(
+              ["git", "diff", "--name-only"], text=True
+          ).splitlines())
+          changed.update(subprocess.check_output(
+              ["git", "ls-files", "--others", "--exclude-standard"], text=True
+          ).splitlines())
+          unexpected = []
+          for path in sorted(changed):
+              if path not in allowed_files and not path.startswith(allowed_prefix):
+                  unexpected.append(path)
+          if unexpected:
+              print("Refusing auto-sync: unexpected generated paths changed:", file=sys.stderr)
+              for path in unexpected:
+                  print(f"- {path}", file=sys.stderr)
+              raise SystemExit(1)
+          PY
+          git add --all -- paper-content.js paper.config.json assets/paper-figures/
           if git diff --cached --quiet; then
             echo "No file changes to commit despite exit 10; skipping."
           else
             git commit -m "Auto-sync from arXiv (${NEWHASH})"
             git push
           fi
+
+      - name: Deploy updated source
+        if: steps.gate.outputs.enabled == 'true' && steps.sync.outputs.exit_code == '10'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main
