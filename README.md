@@ -115,20 +115,19 @@ Everything the reader sees is driven by generated data, not hand-written HTML:
 
 ### Sidebar navigation
 
-The primary sidebar follows the information hierarchy on `mintresearch.org`. The
-paper theme, typography, navigation, and interaction code remain self-contained
-in this repository. The **Microsites** group stays open,
-**Blind Refusal** is its active leaf, and the leaf expands into the anchors for
-this page. Appendix sections and About are page anchors rather than separate
-top-level pages. Keep the peer-microsite labels and URLs synchronized with
-`mintresearch.org/src/data/navigation.ts`.
+The primary sidebar is rendered by the versioned
+`https://mintresearch.org/assets/mint-site-nav.v1.js` contract. Global labels,
+URLs, ordering, glyphs, and peers therefore stay synchronized with the main
+site. This repository supplies only `MintSiteNavConfig.local`: Blind Refusal's
+paper anchors and Appendix nesting. The local scroll-spy refreshes its link
+references after the shared renderer dispatches `mint-site-nav:rendered`.
 
 The masthead is the deliberate exception to the self-contained runtime boundary:
-`index.html` loads `https://mintresearch.org/assets/mint-banner.css` and
-`mint-banner.js`, and uses the canonical banner images from the same asset root.
-Those banner-only files own its markup, dimensions, responsive behavior, image
-list, and measured `--banner-h`. Do not import the full main-site `theme.css` or
-`theme.js`, and do not reintroduce local banner dimensions in `styles.css`.
+`index.html` provides an empty `.top-banner` mount and loads
+`https://mintresearch.org/assets/mint-banner.css` plus `mint-banner.js`. Those
+banner-only files own its markup, dimensions, responsive wrapping, image list,
+motion, and measured `--banner-h`. Do not import the full main-site `theme.css`
+or `theme.js`, and do not reintroduce local banner internals in `styles.css`.
 
 Typography follows the same division of labour as the other microsites:
 JetBrains Mono is reserved for navigation, headings, labels, legends, metadata,
@@ -142,7 +141,7 @@ oversized-banner regression came from duplicate local banner geometry being
 restored by whole-theme rollbacks, so the fix is the ownership boundary above:
 only the main site's banner-only files own dimensions and assets.
 
-The contract script remains available as an optional local diagnostic:
+The contract diagnostic checks both inherited components:
 
 ```bash
 node scripts/check_banner_contract.mjs
