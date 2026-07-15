@@ -4,8 +4,6 @@ import fs from 'node:fs';
 const read = (path) => fs.readFileSync(path, 'utf8');
 const html = read('index.html');
 const css = read('styles.css');
-const deploy = read('.github/workflows/deploy.yml');
-const sync = read('.github/workflows/sync-from-source.yml');
 
 const contractCss = 'https://mintresearch.org/assets/mint-banner.css';
 const contractJs = 'https://mintresearch.org/assets/mint-banner.js';
@@ -38,11 +36,4 @@ for (const match of css.matchAll(/(\.top-banner(?:-(?:inner|logo|minties|minty))
   }
 }
 
-assert.ok(deploy.includes('node scripts/check_banner_contract.mjs'), 'Pages deploy must enforce the banner contract');
-assert.ok(sync.includes('node scripts/check_banner_contract.mjs'), 'source sync must enforce the banner contract');
-assert.ok(!sync.includes('git add -A'), 'source sync must not stage shell/theme changes');
-assert.ok(sync.includes('git add --all -- paper-content.js paper.config.json assets/paper-figures/'), 'source sync must stage only generated paper files');
-assert.ok(sync.includes('actions: write'), 'source sync needs permission to dispatch the deployment workflow');
-assert.ok(sync.includes('gh workflow run deploy.yml --ref main'), 'source sync must explicitly deploy GITHUB_TOKEN commits');
-
-console.log('Blind Refusal banner contract passed: canonical main-site banner, local paper theme, guarded deployment.');
+console.log('Blind Refusal banner diagnostic passed: canonical main-site banner and local paper theme.');

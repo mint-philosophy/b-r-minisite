@@ -134,29 +134,25 @@ Typography follows the same division of labour as the other microsites:
 JetBrains Mono is reserved for navigation, headings, labels, legends, metadata,
 and data tables; Newsreader is used for sustained paper prose and references.
 
-### Deployment guard
+### Deployment
 
 GitHub Pages deploys through `.github/workflows/deploy.yml`, not the legacy
-publish-every-push path. Every deployment first runs the banner contract check.
-It requires the main-site-owned banner stylesheet, component, and images; keeps
-the local Blind Refusal theme; forbids the full main-site theme; and rejects
-local banner dimensions. A commit that restores the oversized banner can remain
-in Git history, but it cannot replace the public site.
+publish-every-push path. Banner compatibility does not gate deployment. The
+oversized-banner regression came from duplicate local banner geometry being
+restored by whole-theme rollbacks, so the fix is the ownership boundary above:
+only the main site's banner-only files own dimensions and assets.
 
-The repository Pages Source must remain **GitHub Actions** (`build_type=workflow`),
-not branch publishing; otherwise pushes can bypass this gate.
-
-Run the contract check before any manual deployment or shell/theme edit:
+The contract script remains available as an optional local diagnostic:
 
 ```bash
 node scripts/check_banner_contract.mjs
 ```
 
-The arXiv auto-sync runs the same contract check and may stage only
-`paper-content.js`, `paper.config.json`, and generated paper figures. It refuses
-unexpected shell or theme changes instead of sweeping them into an automated
-commit, then explicitly dispatches the Pages workflow because GitHub does not
-start push-triggered workflows for commits made with the workflow token.
+The arXiv auto-sync may stage only `paper-content.js`, `paper.config.json`, and
+generated paper figures. It refuses unexpected shell or theme changes instead
+of sweeping them into an automated commit, then explicitly dispatches the Pages
+workflow because GitHub does not start push-triggered workflows for commits made
+with the workflow token.
 
 Build order: edit `paper.config.json` and/or `paper-assets/` → run
 `extract_paper.py` → open `index.html`.

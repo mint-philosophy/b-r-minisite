@@ -35,9 +35,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Enforce site contract
-        run: node scripts/check_banner_contract.mjs
-
       - name: Check autoSyncFromSource flag and source kind
         id: gate
         run: |
