@@ -337,20 +337,11 @@ mobileMenuBtn?.addEventListener("click", () => {
 });
 
 mobileOverlay?.addEventListener("click", closeMobileMenu);
-sidebar?.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", closeMobileMenu);
+sidebar?.addEventListener("click", (event) => {
+  if (event.target instanceof Element && event.target.closest("a")) closeMobileMenu();
 });
 
-function syncBannerHeight() {
-  if (banner) {
-    document.documentElement.style.setProperty("--banner-h", `${banner.offsetHeight}px`);
-  }
-}
-
-syncBannerHeight();
-window.addEventListener("resize", syncBannerHeight);
 window.addEventListener("load", () => {
-  syncBannerHeight();
   updatePaperRails();
   setTimeout(scrollToCurrentHash, 50);
 });
@@ -497,7 +488,7 @@ sidebarToggle?.addEventListener("click", () => {
   const collapsed = document.body.classList.toggle("sidebar-collapsed");
   sidebarToggle.textContent = collapsed ? "»" : "«";
   localStorage.setItem("sidebar-collapsed", collapsed ? "1" : "0");
-  setTimeout(syncBannerHeight, 350);
+  setTimeout(updatePaperRails, 350);
 });
 
 function openSearch() {
@@ -555,14 +546,26 @@ const statusSectionTop = document.getElementById("statusSectionTop");
 const statusBar = document.getElementById("statusBar");
 const statusPct = document.getElementById("statusPct");
 const tokenDisplay = document.getElementById("tokenDisplay");
-const pageAnchorLinks = Array.from(document.querySelectorAll("[data-page-anchor]"));
-const blindRefusalLeaf = document.querySelector("[data-microsite-current]");
-const appendixAnchor = pageAnchorLinks.find((link) => link.getAttribute("href") === "#appendix");
+let pageAnchorLinks = [];
+let currentMicrositeLeaf = null;
+let appendixAnchor = null;
 const railLinks = Array.from(document.querySelectorAll(".left-rail a"));
 const sections = Array.from(document.querySelectorAll("section[id]"));
 const barLength = 16;
 const mainEl = document.querySelector("main");
 const totalChars = mainEl ? mainEl.textContent.length : 0;
+
+function refreshSharedNavigation() {
+  pageAnchorLinks = Array.from(document.querySelectorAll("[data-page-anchor]"));
+  currentMicrositeLeaf = document.querySelector("[data-microsite-current]");
+  appendixAnchor = pageAnchorLinks.find((link) => link.getAttribute("href") === "#appendix") || null;
+}
+
+refreshSharedNavigation();
+document.addEventListener("mint-site-nav:rendered", () => {
+  refreshSharedNavigation();
+  updateStatus();
+});
 
 function groupedHref(id, links) {
   const exact = `#${id}`;
@@ -639,7 +642,7 @@ function updateStatus() {
     link.classList.toggle("active", link.getAttribute("href") === navHref);
     if (link !== appendixAnchor) link.classList.remove("active-parent");
   });
-  blindRefusalLeaf?.classList.add("active-parent");
+  currentMicrositeLeaf?.classList.add("active-parent");
   appendixAnchor?.classList.toggle(
     "active-parent",
     /^(appendix|[abcde](?:-|$))/.test(current)

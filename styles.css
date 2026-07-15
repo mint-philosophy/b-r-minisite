@@ -2355,6 +2355,11 @@ nav.sidebar a.nav-section {
   max-height: 800px;
 }
 
+.nav-site-group.expanded {
+  max-height: none;
+  overflow: visible;
+}
+
 nav.sidebar a.nav-section .nav-mark {
   font-size: 10px;
   color: var(--text-3);
@@ -2376,41 +2381,22 @@ nav.sidebar a.sub-link {
   font-size: 11px;
 }
 
-.microsites-nav,
-.microsite-page-nav {
-  max-height: none;
-  overflow: visible;
+nav.sidebar a[data-nav-depth="3"] {
+  padding-left: 44px;
+  font-size: 10px;
 }
 
-nav.sidebar a.microsite-leaf {
+nav.sidebar a[data-microsite-current] {
   font-weight: 600;
   color: var(--text-2);
 }
 
-nav.sidebar a.microsite-leaf.active-parent::after {
+nav.sidebar a[data-microsite-current].active-parent::after {
   content: "█";
   margin-left: auto;
   color: var(--accent);
   font-size: 10px;
   animation: blink 1s step-end infinite;
-}
-
-.microsite-page-nav {
-  margin-left: 20px;
-  border-left: 1px dashed var(--border);
-}
-
-nav.sidebar .microsite-page-nav a.nav-section {
-  padding-left: 16px;
-}
-
-nav.sidebar .microsite-page-nav a.appendix-sub-link {
-  padding-left: 28px;
-  font-size: 10px;
-}
-
-nav.sidebar a.microsite-peer {
-  align-items: flex-start;
 }
 
 .nav-divider {
@@ -2556,45 +2542,7 @@ nav.sidebar a.sidebar-header:hover {
   background: var(--bg-0);
   border-bottom: 1px solid var(--border);
   z-index: 90;
-  display: flex;
-  align-items: center;
   transition: left 0.3s ease;
-}
-
-.top-banner-inner {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.top-banner-logo {
-  width: auto;
-  image-rendering: auto;
-  flex-shrink: 0;
-}
-
-.top-banner-minties {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.top-banner-minty {
-  object-fit: contain;
-  image-rendering: pixelated;
-  opacity: 0;
-  animation: mintyFadeIn 0.4s ease forwards;
-  transition: transform 0.2s;
-}
-
-.top-banner-minty:hover {
-  transform: scale(1.3) translateY(-4px);
-}
-
-@keyframes mintyFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .sidebar-toggle {
