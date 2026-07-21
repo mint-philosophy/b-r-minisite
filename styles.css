@@ -841,6 +841,10 @@ h1 {
   margin-bottom: 56px;
 }
 
+.demo-scroll-cue:hover {
+  text-decoration: none;
+}
+
 .demo-scroll-icon {
   display: inline-block;
   font-size: 18px;

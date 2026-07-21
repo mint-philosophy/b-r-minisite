@@ -25,6 +25,18 @@ assert.ok(html.includes('id="siteNav" data-mint-site-nav'), 'provide a marked sh
 assert.ok(html.includes('currentId: "blind-refusal"'), 'select the canonical Blind Refusal navigation node');
 assert.ok(html.includes('parentId: "blind-refusal"'), 'attach local paper anchors to Blind Refusal');
 
+const demoPaperCues = Array.from(
+  html.matchAll(/<a\s+class="demo-scroll-cue(?: demo-scroll-cue--top)?"\s+href="#paper">([\s\S]*?)<\/a>/g)
+);
+assert.match(html, /<section\s+id="paper"(?:\s|>)/, 'the demo cue target must exist');
+assert.equal(demoPaperCues.length, 2, 'both demo scroll cues must link directly to the paper');
+for (const [, cue] of demoPaperCues) {
+  assert.ok(cue.includes('Scroll for demo'), 'each paper cue must retain the demo instruction');
+  assert.ok(cue.includes('Paper below'), 'each paper cue must retain the paper destination label');
+  assert.match(cue, /class="demo-scroll-icon" aria-hidden="true"/, 'the decorative cue arrow must stay hidden from assistive technology');
+}
+assert.match(css, /\.demo-scroll-cue:hover\s*\{[^}]*text-decoration:\s*none/s, 'linked demo cues must retain their non-underlined visual treatment');
+
 const forbidden = {
   '.top-banner': new Set(['padding', 'height', 'min-height']),
   '.top-banner-inner': new Set(['padding', 'gap', 'flex-direction']),
